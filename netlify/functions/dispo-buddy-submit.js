@@ -23,6 +23,10 @@ const JV_STAGE_NEW   = 'cf2388f0-fdbf-4fb1-b633-86569034fcce';
 // MAIN HANDLER
 // ─────────────────────────────────────────────────────────────
 exports.handler = async (event) => {
+  if (event.httpMethod === 'OPTIONS') {
+    return respond(200, {});
+  }
+
   if (event.httpMethod !== 'POST') {
     return respond(405, { error: 'Method not allowed' });
   }
@@ -658,6 +662,8 @@ function respond(statusCode, body) {
     headers: {
       'Content-Type': 'application/json',
       'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Headers': 'Content-Type',
+      'Access-Control-Allow-Methods': 'POST, OPTIONS',
     },
     body: JSON.stringify(body),
   };
