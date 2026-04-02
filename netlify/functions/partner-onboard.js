@@ -52,8 +52,26 @@ exports.handler = async (event) => {
   if (body.formType === 'contact') {
     return handleContactForm(body, headers, locationId);
   }
-  return handlePartnerOnboarding(body, headers, locationId);
+  // Normalize camelCase field names from join.html → snake_case expected by handler
+  const normalized = normalizeOnboardingFields(body);
+  return handlePartnerOnboarding(normalized, headers, locationId);
 };
+
+// ─────────────────────────────────────────────────────────────
+// NORMALIZE FIELD NAMES (join.html sends camelCase)
+// ─────────────────────────────────────────────────────────────
+function normalizeOnboardingFields(b) {
+  return {
+    ...b,
+    full_name:       b.full_name       || b.fullName       || '',
+    partner_type:    b.partner_type    || b.role           || '',
+    primary_markets: b.primary_markets || b.markets        || '',
+    deal_types:      b.deal_types      || (Array.isArray(b.dealTypes) ? b.dealTypes.join(', ') : b.dealTypes) || '',
+    monthly_volume:  b.monthly_volume  || b.volume         || '',
+    deal_ready:      b.deal_ready      || b.dealReady      || '',
+    referral_source: b.referral_source || b.source         || '',
+  };
+}
 
 // ─────────────────────────────────────────────────────────────
 // PARTNER ONBOARDING HANDLER
@@ -256,9 +274,9 @@ async function handleContactForm(body, headers, locationId) {
           html: `
             <div style="font-family:'Poppins',Helvetica,Arial,sans-serif;color:#0D1F3C">
               <h2>Contact Form Message</h2>
-              <p><strong>From:</strong> ${body.name} · ${body.email}${body.phone ? ' · ' + body.phone : ''}</p>
-              <p><strong>Subject:</strong> ${body.subject || 'N/A'}</p>
-              <div style="background:#F4F6F9;padding:20px;border-radius:8px;margin:16px 0;white-space:pre-wrap">${body.message || '(no message)'}</div>
+              <p><strong>From:</strong> ${esc(body.name)} · ${esc(body.email)}${body.phone ? ' · ' + esc(body.phone) : ''}</p>
+              <p><strong>Subject:</strong> ${esc(body.subject) || 'N/A'}</p>
+              <div style="background:#F4F6F9;padding:20px;border-radius:8px;margin:16px 0;white-space:pre-wrap">${esc(body.message) || '(no message)'}</div>
               <a href="https://app.gohighlevel.com/v2/location/7IyUgu1zpi38MDYpSDTs/contacts/detail/${contactId}" style="display:inline-block;padding:10px 24px;background:#F7941D;color:#fff;border-radius:8px;font-weight:700;text-decoration:none">View in GHL</a>
             </div>`,
         }).catch(err => console.warn('Internal email failed:', err.message))
@@ -332,22 +350,22 @@ function buildOnboardingWelcomeEmail(d) {
 }
 
 function buildInternalOnboardingEmail(d, contactId) {
-  const ghlLink = `https://app.gohighlevel.com/v2/location/7IyUgu1zpi38MDYpSDTs/contacts/detail/${contactId}`;
+  const ghlLink = `https://app.gohighlevel.com/v2/location/7IyUgu1zpi38MDYpSDTs/contacts/detail/${encodeURIComponent(contactId)}`;
   return `
     <div style="font-family:'Poppins',Helvetica,Arial,sans-serif;max-width:600px;color:#0D1F3C">
       <h2>New Partner Joined</h2>
       <table style="width:100%;border-collapse:collapse;margin-bottom:24px">
-        <tr><td style="padding:8px 12px;font-weight:600;border-bottom:1px solid #E2E8F0;width:140px">Name</td><td style="padding:8px 12px;border-bottom:1px solid #E2E8F0">${d.full_name}</td></tr>
-        <tr><td style="padding:8px 12px;font-weight:600;border-bottom:1px solid #E2E8F0">Type</td><td style="padding:8px 12px;border-bottom:1px solid #E2E8F0">${d.partner_type}</td></tr>
-        <tr><td style="padding:8px 12px;font-weight:600;border-bottom:1px solid #E2E8F0">Phone</td><td style="padding:8px 12px;border-bottom:1px solid #E2E8F0">${d.phone}</td></tr>
-        <tr><td style="padding:8px 12px;font-weight:600;border-bottom:1px solid #E2E8F0">Email</td><td style="padding:8px 12px;border-bottom:1px solid #E2E8F0">${d.email}</td></tr>
-        <tr><td style="padding:8px 12px;font-weight:600;border-bottom:1px solid #E2E8F0">Company</td><td style="padding:8px 12px;border-bottom:1px solid #E2E8F0">${d.company || 'N/A'}</td></tr>
-        <tr><td style="padding:8px 12px;font-weight:600;border-bottom:1px solid #E2E8F0">Markets</td><td style="padding:8px 12px;border-bottom:1px solid #E2E8F0">${d.primary_markets || 'N/A'}</td></tr>
-        <tr><td style="padding:8px 12px;font-weight:600;border-bottom:1px solid #E2E8F0">Deal Types</td><td style="padding:8px 12px;border-bottom:1px solid #E2E8F0">${d.deal_types || 'N/A'}</td></tr>
-        <tr><td style="padding:8px 12px;font-weight:600;border-bottom:1px solid #E2E8F0">Volume</td><td style="padding:8px 12px;border-bottom:1px solid #E2E8F0">${d.monthly_volume || 'N/A'}</td></tr>
-        <tr><td style="padding:8px 12px;font-weight:600;border-bottom:1px solid #E2E8F0">Deal Ready?</td><td style="padding:8px 12px;border-bottom:1px solid #E2E8F0">${d.deal_ready || 'N/A'}</td></tr>
-        <tr><td style="padding:8px 12px;font-weight:600;border-bottom:1px solid #E2E8F0">Source</td><td style="padding:8px 12px;border-bottom:1px solid #E2E8F0">${d.referral_source || 'N/A'}</td></tr>
-        ${d.notes ? `<tr><td style="padding:8px 12px;font-weight:600;border-bottom:1px solid #E2E8F0">Notes</td><td style="padding:8px 12px;border-bottom:1px solid #E2E8F0">${d.notes}</td></tr>` : ''}
+        <tr><td style="padding:8px 12px;font-weight:600;border-bottom:1px solid #E2E8F0;width:140px">Name</td><td style="padding:8px 12px;border-bottom:1px solid #E2E8F0">${esc(d.full_name)}</td></tr>
+        <tr><td style="padding:8px 12px;font-weight:600;border-bottom:1px solid #E2E8F0">Type</td><td style="padding:8px 12px;border-bottom:1px solid #E2E8F0">${esc(d.partner_type)}</td></tr>
+        <tr><td style="padding:8px 12px;font-weight:600;border-bottom:1px solid #E2E8F0">Phone</td><td style="padding:8px 12px;border-bottom:1px solid #E2E8F0">${esc(d.phone)}</td></tr>
+        <tr><td style="padding:8px 12px;font-weight:600;border-bottom:1px solid #E2E8F0">Email</td><td style="padding:8px 12px;border-bottom:1px solid #E2E8F0">${esc(d.email)}</td></tr>
+        <tr><td style="padding:8px 12px;font-weight:600;border-bottom:1px solid #E2E8F0">Company</td><td style="padding:8px 12px;border-bottom:1px solid #E2E8F0">${esc(d.company) || 'N/A'}</td></tr>
+        <tr><td style="padding:8px 12px;font-weight:600;border-bottom:1px solid #E2E8F0">Markets</td><td style="padding:8px 12px;border-bottom:1px solid #E2E8F0">${esc(d.primary_markets) || 'N/A'}</td></tr>
+        <tr><td style="padding:8px 12px;font-weight:600;border-bottom:1px solid #E2E8F0">Deal Types</td><td style="padding:8px 12px;border-bottom:1px solid #E2E8F0">${esc(d.deal_types) || 'N/A'}</td></tr>
+        <tr><td style="padding:8px 12px;font-weight:600;border-bottom:1px solid #E2E8F0">Volume</td><td style="padding:8px 12px;border-bottom:1px solid #E2E8F0">${esc(d.monthly_volume) || 'N/A'}</td></tr>
+        <tr><td style="padding:8px 12px;font-weight:600;border-bottom:1px solid #E2E8F0">Deal Ready?</td><td style="padding:8px 12px;border-bottom:1px solid #E2E8F0">${esc(d.deal_ready) || 'N/A'}</td></tr>
+        <tr><td style="padding:8px 12px;font-weight:600;border-bottom:1px solid #E2E8F0">Source</td><td style="padding:8px 12px;border-bottom:1px solid #E2E8F0">${esc(d.referral_source) || 'N/A'}</td></tr>
+        ${d.notes ? `<tr><td style="padding:8px 12px;font-weight:600;border-bottom:1px solid #E2E8F0">Notes</td><td style="padding:8px 12px;border-bottom:1px solid #E2E8F0">${esc(d.notes)}</td></tr>` : ''}
       </table>
       <a href="${ghlLink}" style="display:inline-block;padding:12px 28px;background:#F7941D;color:#fff;border-radius:8px;font-weight:700;text-decoration:none">View in GHL</a>
     </div>`;
@@ -530,6 +548,11 @@ async function addNote(contactId, headers, body) {
 // ─────────────────────────────────────────────────────────────
 // HELPERS
 // ─────────────────────────────────────────────────────────────
+function esc(str) {
+  if (!str) return '';
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
 async function ghlFetch(url, method, payload, headers) {
   const opts = { method, headers };
   if (payload && method !== 'GET') opts.body = JSON.stringify(payload);

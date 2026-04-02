@@ -23,6 +23,10 @@ const JV_STAGE_NEW   = 'cf2388f0-fdbf-4fb1-b633-86569034fcce';
 // MAIN HANDLER
 // ─────────────────────────────────────────────────────────────
 exports.handler = async (event) => {
+  if (event.httpMethod === 'OPTIONS') {
+    return respond(200, {});
+  }
+
   if (event.httpMethod !== 'POST') {
     return respond(405, { error: 'Method not allowed' });
   }
@@ -244,14 +248,14 @@ function buildInternalAlertSMS(d) {
 
 function buildInternalAlertEmail(d, contactId) {
   const addr = [d.property_address, d.property_city, d.property_state, d.property_zip].filter(Boolean).join(', ');
-  const ghlLink = `https://app.gohighlevel.com/v2/location/7IyUgu1zpi38MDYpSDTs/contacts/detail/${contactId}`;
+  const ghlLink = `https://app.gohighlevel.com/v2/location/7IyUgu1zpi38MDYpSDTs/contacts/detail/${encodeURIComponent(contactId)}`;
   return `
     <div style="font-family:'Poppins',Helvetica,Arial,sans-serif;max-width:600px;color:#0D1F3C">
       <h2 style="margin-bottom:16px">New JV Deal Submitted</h2>
       <table style="width:100%;border-collapse:collapse;margin-bottom:24px">
-        <tr><td style="padding:8px 12px;font-weight:600;border-bottom:1px solid #E2E8F0;width:140px">Partner</td><td style="padding:8px 12px;border-bottom:1px solid #E2E8F0">${d.jv_partner_name} · ${d.jv_phone_number}${d.jv_partner_email ? ' · ' + d.jv_partner_email : ''}</td></tr>
-        <tr><td style="padding:8px 12px;font-weight:600;border-bottom:1px solid #E2E8F0">Deal Type</td><td style="padding:8px 12px;border-bottom:1px solid #E2E8F0">${d.deal_type || 'N/A'}</td></tr>
-        <tr><td style="padding:8px 12px;font-weight:600;border-bottom:1px solid #E2E8F0">Property</td><td style="padding:8px 12px;border-bottom:1px solid #E2E8F0">${addr || 'N/A'}</td></tr>
+        <tr><td style="padding:8px 12px;font-weight:600;border-bottom:1px solid #E2E8F0;width:140px">Partner</td><td style="padding:8px 12px;border-bottom:1px solid #E2E8F0">${esc(d.jv_partner_name)} · ${esc(d.jv_phone_number)}${d.jv_partner_email ? ' · ' + esc(d.jv_partner_email) : ''}</td></tr>
+        <tr><td style="padding:8px 12px;font-weight:600;border-bottom:1px solid #E2E8F0">Deal Type</td><td style="padding:8px 12px;border-bottom:1px solid #E2E8F0">${esc(d.deal_type) || 'N/A'}</td></tr>
+        <tr><td style="padding:8px 12px;font-weight:600;border-bottom:1px solid #E2E8F0">Property</td><td style="padding:8px 12px;border-bottom:1px solid #E2E8F0">${esc(addr) || 'N/A'}</td></tr>
         <tr><td style="padding:8px 12px;font-weight:600;border-bottom:1px solid #E2E8F0">Contract Price</td><td style="padding:8px 12px;border-bottom:1px solid #E2E8F0">${fmtPrice(d.contracted_price) || 'N/A'}</td></tr>
         <tr><td style="padding:8px 12px;font-weight:600;border-bottom:1px solid #E2E8F0">Asking Price</td><td style="padding:8px 12px;border-bottom:1px solid #E2E8F0">${fmtPrice(d.desired_asking_price) || 'N/A'}</td></tr>
         <tr><td style="padding:8px 12px;font-weight:600;border-bottom:1px solid #E2E8F0">ARV</td><td style="padding:8px 12px;border-bottom:1px solid #E2E8F0">${fmtPrice(d.arv_estimate) || 'N/A'}</td></tr>
@@ -646,6 +650,11 @@ async function createNotionDeal(token, dbId, d) {
 // ─────────────────────────────────────────────────────────────
 // HELPERS
 // ─────────────────────────────────────────────────────────────
+function esc(str) {
+  if (!str) return '';
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
 async function ghlFetch(url, method, payload, headers) {
   const opts = { method, headers };
   if (payload && method !== 'GET') opts.body = JSON.stringify(payload);
@@ -658,6 +667,8 @@ function respond(statusCode, body) {
     headers: {
       'Content-Type': 'application/json',
       'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Headers': 'Content-Type',
+      'Access-Control-Allow-Methods': 'POST, OPTIONS',
     },
     body: JSON.stringify(body),
   };

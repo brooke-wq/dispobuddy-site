@@ -38,6 +38,7 @@ function httpRequest(url, options, body) {
 var CF = {
   TARGET_STATES:    'aewzY7iEvZh12JhMVi7E',
   TARGET_CITIES:    'DbY7dHIXk8YowpaWrxYj',
+  TARGET_MARKETS:   'DbY7dHIXk8YowpaWrxYj', // Alias for TARGET_CITIES — referenced in buyer matching logic
   DEAL_STRUCTURES:  '0L0ycmmsEjy6OPDL0rgq',
   PROPERTY_TYPE:    'HGC6xWLpSqoAQPZr0uwY',
   MAX_PRICE:        'BcxuopmSK4wA3Z3NyanD',
