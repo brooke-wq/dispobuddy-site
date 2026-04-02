@@ -119,6 +119,27 @@ a{text-decoration:none;color:inherit}
 .type-tag:hover{border-color:var(--blue);background:var(--blue-light);color:var(--blue)}
 .type-tag svg{width:16px;height:16px;color:var(--blue)}
 
+/* ── HOT MARKETS ──────────────────── */
+.hot-markets{padding:80px 0;background:var(--bg)}
+.hot-inner{max-width:1100px;margin:0 auto;padding:0 24px}
+.hot-top{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:40px;gap:20px;flex-wrap:wrap}
+.hot-top h2{font-size:clamp(1.5rem,3vw,2rem);font-weight:800;letter-spacing:-.02em;margin-bottom:4px}
+.hot-top h2 em{font-style:normal;color:var(--orange)}
+.hot-sub{color:var(--text-mid);font-size:15px}
+.hot-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px}
+.hot-card{background:var(--white);border-radius:var(--r);padding:20px;border:1px solid var(--border);transition:all .2s;cursor:pointer;text-decoration:none;color:inherit}
+.hot-card:hover{border-color:var(--blue);box-shadow:0 6px 20px rgba(13,31,60,.08);transform:translateY(-2px)}
+.hot-card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.hot-card-city{font-size:15px;font-weight:700;color:var(--navy)}
+.hot-card-count{font-size:12px;font-weight:600;color:var(--white);background:var(--orange);padding:2px 10px;border-radius:20px}
+.hot-card-pills{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px}
+.hot-card-pill{font-size:10px;font-weight:500;padding:2px 8px;border-radius:20px;background:var(--blue-light);color:var(--blue)}
+.hot-card-pill.cash{background:#FEF3C7;color:#92400E}
+.hot-card-pill.subto{background:#DBEAFE;color:#1E40AF}
+.hot-card-pill.sf{background:#D1FAE5;color:#065F46}
+.hot-card-price{font-size:11px;color:var(--text-light)}
+.hot-loading{text-align:center;color:var(--text-light);padding:40px 0;font-size:14px}
+
 /* ── BUYERS MAP CALLOUT ────────────── */
 .map-callout{padding:80px 0;background:var(--white)}
 .map-inner{max-width:1100px;margin:0 auto;padding:0 24px;display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
@@ -197,6 +218,8 @@ a{text-decoration:none;color:inherit}
   .process-grid{grid-template-columns:1fr}
   .why-split{grid-template-columns:1fr;gap:32px}
   .map-inner{grid-template-columns:1fr}
+  .hot-grid{grid-template-columns:1fr 1fr}
+  .hot-top{flex-direction:column;align-items:flex-start}
   .map-preview{aspect-ratio:16/9}
   .social-stats{gap:24px;flex-wrap:wrap}
   body{padding-bottom:64px}
@@ -211,6 +234,7 @@ a{text-decoration:none;color:inherit}
   .type-list{gap:8px}
   .type-tag{padding:10px 16px;font-size:13px}
   .social-stats{flex-direction:column;gap:20px}
+  .hot-grid{grid-template-columns:1fr}
   .cta-btns{flex-direction:column;align-items:center}
   .cta-btns .btn{width:100%;max-width:320px}
   .footer-links{flex-direction:column;gap:12px}
@@ -364,6 +388,25 @@ a{text-decoration:none;color:inherit}
   </div>
 </section>
 
+<!-- HOT MARKETS (dynamic from buyer-demand API) -->
+<section class="hot-markets" id="hotMarkets">
+  <div class="hot-inner">
+    <div class="hot-top">
+      <div>
+        <h2 class="reveal">Where buyers are looking <em>right now.</em></h2>
+        <p class="hot-sub reveal">Live demand from our buyer network. Submit a deal in a hot market.</p>
+      </div>
+      <a href="/buyers-map" class="btn btn-ghost reveal" style="flex-shrink:0">View Full Map</a>
+    </div>
+    <div class="hot-grid" id="hotGrid">
+      <div class="hot-loading">Loading buyer demand...</div>
+    </div>
+    <div class="hot-footer reveal" style="text-align:center;margin-top:32px">
+      <a href="/buyers-map" class="btn btn-o">See All Markets &amp; Buyers</a>
+    </div>
+  </div>
+</section>
+
 <!-- BUYERS MAP CALLOUT -->
 <section class="map-callout">
   <div class="map-inner">
@@ -501,6 +544,50 @@ a{text-decoration:none;color:inherit}
     var obs=new IntersectionObserver(function(entries){entries.forEach(function(e){if(e.isIntersecting){e.target.classList.add('vis');obs.unobserve(e.target)}})},{threshold:.12,rootMargin:'0px 0px -30px 0px'});
     els.forEach(function(el){obs.observe(el)});
   }else{els.forEach(function(el){el.classList.add('vis')})}
+  // Hot Markets — load from buyer-demand API
+  (function loadHotMarkets(){
+    var grid=document.getElementById('hotGrid');
+    if(!grid)return;
+    fetch('/api/buyer-demand').then(function(r){return r.json()}).then(function(data){
+      if(!data||!data.markets||!data.markets.length){
+        grid.innerHTML='<div class="hot-loading">Market data loading. Check back soon.</div>';
+        return;
+      }
+      var top=data.markets.slice(0,8);
+      grid.innerHTML='';
+      top.forEach(function(m){
+        var pills='';
+        if(m.dealTypes){
+          Object.keys(m.dealTypes).forEach(function(k){
+            var cls='';
+            var kl=k.toLowerCase();
+            if(kl.includes('cash'))cls='cash';
+            else if(kl.includes('sub'))cls='subto';
+            else if(kl.includes('seller')||kl.includes('finance'))cls='sf';
+            pills+='<span class="hot-card-pill '+cls+'">'+k.replace('Subject To','SubTo').replace('Seller Finance','SF')+'</span>';
+          });
+        }
+        var price='';
+        if(m.priceRange){
+          var fmt=function(n){return n>=1e6?'$'+(n/1e6).toFixed(1)+'M':n>=1e3?'$'+Math.round(n/1e3)+'K':'$'+n};
+          price=fmt(m.priceRange.min)+' – '+fmt(m.priceRange.max);
+        }
+        var card=document.createElement('a');
+        card.href='/buyers-map';
+        card.className='hot-card reveal vis';
+        card.innerHTML=
+          '<div class="hot-card-top">'+
+            '<span class="hot-card-city">'+m.label+'</span>'+
+            '<span class="hot-card-count">'+m.buyerCount+' buyers</span>'+
+          '</div>'+
+          (pills?'<div class="hot-card-pills">'+pills+'</div>':'')+
+          (price?'<div class="hot-card-price">'+price+'</div>':'');
+        grid.appendChild(card);
+      });
+    }).catch(function(){
+      grid.innerHTML='<div class="hot-loading">Market data loading. Check back soon.</div>';
+    });
+  })();
 })();
 </script>
 </body>

@@ -285,12 +285,11 @@ function aggregateBuyerData(buyers) {
     }
   });
 
-  // Build markets array, filtering out markets with fewer than 2 buyers (privacy)
-  var MIN_BUYERS_PER_MARKET = 2;
+  // Build markets array — include all markets with at least 1 buyer
   var marketsArray = [];
   Object.keys(markets).forEach(function(label) {
     var m = markets[label];
-    if (m.buyerCount < MIN_BUYERS_PER_MARKET) return;
+    if (m.buyerCount < 1) return;
     marketsArray.push({
       city: m.city,
       state: m.state,
@@ -304,6 +303,23 @@ function aggregateBuyerData(buyers) {
     });
   });
 
+  // Create "Statewide" entries for state-only buyers (buyers with state but no city)
+  Object.keys(stateOnlyBuyers).forEach(function(state) {
+    var count = stateOnlyBuyers[state];
+    if (count < 1) return;
+    marketsArray.push({
+      city: 'Statewide',
+      state: state,
+      label: 'Statewide, ' + state,
+      buyerCount: count,
+      dealTypes: {},
+      propertyTypes: {},
+      exitStrategies: {},
+      priceRange: null,
+      entryRange: null
+    });
+  });
+
   // Sort markets by buyer count descending
   marketsArray.sort(function(a, b) { return b.buyerCount - a.buyerCount; });
 
@@ -314,17 +330,9 @@ function aggregateBuyerData(buyers) {
       stateBuckets[m.state] = { state: m.state, buyerCount: 0, cities: [] };
     }
     stateBuckets[m.state].buyerCount += m.buyerCount;
-    if (stateBuckets[m.state].cities.indexOf(m.city) === -1) {
+    if (m.city !== 'Statewide' && stateBuckets[m.state].cities.indexOf(m.city) === -1) {
       stateBuckets[m.state].cities.push(m.city);
     }
-  });
-
-  // Add state-only buyers to state summary
-  Object.keys(stateOnlyBuyers).forEach(function(state) {
-    if (!stateBuckets[state]) {
-      stateBuckets[state] = { state: state, buyerCount: 0, cities: [] };
-    }
-    stateBuckets[state].buyerCount += stateOnlyBuyers[state];
   });
 
   var statesSummary = Object.keys(stateBuckets).map(function(st) {
