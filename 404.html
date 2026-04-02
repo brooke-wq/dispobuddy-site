@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>404 — Page Not Found | Dispo Buddy</title>
+<meta name="description" content="The page you're looking for doesn't exist. Head back to Dispo Buddy to submit a deal or browse our resources.">
+<link rel="canonical" href="https://dispobuddy.com/404">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#0D1F3C;--navy2:#0a1828;--navy3:#132848;
+  --orange:#F7941D;--orange-dark:#d97c0e;
+  --blue:#29ABE2;--blue-dark:#1a8bbf;--blue-light:#EBF8FF;
+  --green:#22c55e;
+  --white:#fff;--bg:#F4F6F9;
+  --text:#0D1F3C;--text-mid:#4A6070;--text-light:#718096;
+  --border:#E2E8F0;
+  --r:12px;--r-sm:8px;
+  --font:'Poppins',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--font);color:var(--text);background:var(--bg);line-height:1.6;-webkit-font-smoothing:antialiased}
+img{max-width:100%;display:block}
+a{text-decoration:none;color:inherit}
+
+/* NAV */
+.nav{position:fixed;top:0;left:0;right:0;height:64px;background:rgba(255,255,255,.92);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--border);z-index:1000;transition:box-shadow .3s}
+.nav.scrolled{box-shadow:0 2px 20px rgba(13,31,60,.08)}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;height:100%;max-width:1100px;margin:0 auto;padding:0 24px}
+.nav-logo img{height:48px;width:auto}
+.nav-links{display:flex;gap:28px}
+.nav-links a{font-size:13px;font-weight:500;color:var(--text-mid);transition:color .15s}
+.nav-links a:hover{color:var(--blue)}
+.nav-right{display:flex;align-items:center;gap:10px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 22px;border-radius:var(--r-sm);font-family:var(--font);font-weight:600;font-size:13px;cursor:pointer;border:2px solid transparent;transition:all .2s;white-space:nowrap}
+.btn-o{background:var(--orange);color:var(--white);border-color:var(--orange)}
+.btn-o:hover{background:var(--orange-dark);border-color:var(--orange-dark);transform:translateY(-1px);box-shadow:0 4px 14px rgba(247,148,29,.35)}
+.btn-ghost{background:transparent;color:var(--blue);border-color:rgba(41,171,226,.3)}
+.btn-ghost:hover{background:var(--blue);color:var(--white);border-color:var(--blue);transform:translateY(-1px)}
+.btn-lg{padding:14px 32px;font-size:15px;border-radius:var(--r)}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px;background:none;border:none}
+.hamburger span{display:block;width:22px;height:2px;background:var(--navy);border-radius:2px;transition:all .3s}
+.hamburger.on span:nth-child(1){transform:rotate(45deg) translate(5px,5px)}
+.hamburger.on span:nth-child(2){opacity:0}
+.hamburger.on span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px)}
+.mob-menu{display:none;position:fixed;top:64px;left:0;right:0;bottom:0;background:var(--white);padding:24px;z-index:999;flex-direction:column;gap:4px}
+.mob-menu.on{display:flex}
+.mob-menu a{padding:14px 0;font-size:15px;font-weight:500;color:var(--text);border-bottom:1px solid var(--border)}
+.mob-menu .mob-btns{display:flex;flex-direction:column;gap:10px;margin-top:20px}
+.mob-menu .mob-btns .btn{width:100%;text-align:center}
+
+/* 404 */
+.error-section{min-height:calc(100vh - 64px);display:flex;align-items:center;justify-content:center;padding:120px 24px 80px;text-align:center}
+.error-content{max-width:520px}
+.error-code{font-size:clamp(5rem,15vw,9rem);font-weight:900;line-height:1;background:linear-gradient(135deg,var(--navy) 0%,var(--blue) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:16px}
+.error-title{font-size:clamp(1.4rem,3vw,1.8rem);font-weight:700;color:var(--navy);margin-bottom:12px}
+.error-desc{font-size:15px;color:var(--text-mid);line-height:1.7;margin-bottom:36px}
+.error-btns{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-bottom:36px}
+.error-links{display:flex;flex-wrap:wrap;gap:24px;justify-content:center}
+.error-links a{font-size:13px;font-weight:500;color:var(--blue);transition:color .2s}
+.error-links a:hover{color:var(--blue-dark)}
+
+/* FOOTER */
+.footer{padding:48px 0 28px;background:var(--navy2)}
+.footer-inner{max-width:1100px;margin:0 auto;padding:0 24px}
+.footer-top{display:flex;justify-content:space-between;align-items:flex-start;padding-bottom:32px;border-bottom:1px solid rgba(255,255,255,.08);margin-bottom:24px;flex-wrap:wrap;gap:32px}
+.footer-brand img{height:36px;width:auto;;margin-bottom:10px}
+.footer-brand p{font-size:13px;color:rgba(255,255,255,.35);max-width:260px;line-height:1.6}
+.footer-links{display:flex;gap:40px;flex-wrap:wrap}
+.footer-links a{font-size:13px;color:rgba(255,255,255,.4);transition:color .15s}
+.footer-links a:hover{color:var(--white)}
+.footer-bot{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;font-size:12px;color:rgba(255,255,255,.25)}
+.footer-bot a{color:rgba(255,255,255,.35);transition:color .15s}
+.footer-bot a:hover{color:var(--white)}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  .nav-links,.nav-right{display:none}
+  .hamburger{display:flex}
+}
+@media(max-width:600px){
+  .error-code{font-size:6rem}
+  .error-btns{flex-direction:column;align-items:center}
+  .error-btns .btn{width:100%;max-width:280px}
+  .footer-links{flex-direction:column;gap:12px}
+  .footer-top{flex-direction:column}
+  .footer-bot{flex-direction:column;text-align:center}
+}
+</style>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-DRV6NWNY06"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date());gtag("config","G-DRV6NWNY06");</script></head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="/" class="nav-logo"><img src="/logo-dark.svg" alt="Dispo Buddy"></a>
+    <div class="nav-links">
+      <a href="/process">How It Works</a>
+      <a href="/what-we-look-for">What We Look For</a>
+      <a href="/buyers-map">Active Buyers</a>
+      <a href="/proof">Proof</a>
+      <a href="/faq">FAQ</a>
+    </div>
+    <div class="nav-right">
+      <a href="/join" class="btn btn-ghost">Join Network</a>
+      <a href="/submit-deal" class="btn btn-o">Submit a Deal</a>
+    </div>
+    <button class="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+<div class="mob-menu" id="mobMenu">
+  <a href="/process">How It Works</a>
+  <a href="/what-we-look-for">What We Look For</a>
+  <a href="/buyers-map">Active Buyers</a>
+      <a href="/proof">Proof</a>
+  <a href="/faq">FAQ</a>
+  <a href="/contact">Contact</a>
+  <div class="mob-btns">
+    <a href="/join" class="btn btn-ghost">Join Network</a>
+    <a href="/submit-deal" class="btn btn-o">Submit a Deal</a>
+  </div>
+</div>
+
+<!-- 404 -->
+<section class="error-section">
+  <div class="error-content">
+    <div class="error-code">404</div>
+    <h1 class="error-title">Page not found</h1>
+    <p class="error-desc">Whatever you were looking for isn't here. Might have been moved, might never existed. Either way, let's get you somewhere useful.</p>
+
+    <div class="error-btns">
+      <a href="/" class="btn btn-o btn-lg">Back to Home</a>
+      <a href="/submit-deal" class="btn btn-ghost btn-lg">Submit a Deal</a>
+    </div>
+
+    <div class="error-links">
+      <a href="/process">How It Works</a>
+      <a href="/faq">FAQ</a>
+      <a href="/join">Join Network</a>
+      <a href="/contact">Contact</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <img src="/logo-light.svg" alt="Dispo Buddy">
+        <p>JV dispo partner for wholesalers, bird dogs, and agents. A Deal Pros LLC brand.</p>
+      </div>
+      <div class="footer-links">
+        <a href="/process">How It Works</a>
+        <a href="/what-we-look-for">What We Look For</a>
+        <a href="/submit-deal">Submit a Deal</a>
+        <a href="/join">Join Network</a>
+        <a href="/buyers-map">Active Buyers</a>
+      <a href="/proof">Proof</a>
+        <a href="/faq">FAQ</a>
+        <a href="/contact">Contact</a>
+        <a href="https://deals.termsforsale.com" target="_blank">Terms For Sale</a>
+      </div>
+    </div>
+    <div class="footer-bot">
+      <span>&copy; 2025 Deal Pros LLC</span>
+      <span><a href="mailto:info@dispobuddy.com">info@dispobuddy.com</a> &middot; <a href="tel:4808425332">(480) 842-5332</a></span>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  // Nav scroll shadow
+  var nav=document.querySelector('.nav');
+  window.addEventListener('scroll',function(){nav.classList.toggle('scrolled',window.scrollY>10)},{passive:true});
+
+  // Mobile menu
+  var ham=document.querySelector('.hamburger'),mob=document.getElementById('mobMenu');
+  ham.addEventListener('click',function(){ham.classList.toggle('on');mob.classList.toggle('on');document.body.style.overflow=mob.classList.contains('on')?'hidden':''});
+  mob.querySelectorAll('a').forEach(function(a){a.addEventListener('click',function(){ham.classList.remove('on');mob.classList.remove('on');document.body.style.overflow=''})});
+})();
+</script>
+</body>
+</html>
