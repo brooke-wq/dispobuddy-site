@@ -31,6 +31,11 @@ netlify/functions/
   dispo-buddy-submit.js — POST /api/dispo-buddy-submit — deal submission → GHL + Notion
   partner-onboard.js    — POST /api/partner-onboard — partner signup + contact form → GHL
   sitemap.js            — GET /sitemap.xml — dynamic sitemap
+cron/                   — Droplet cron job scripts (deploy to 64.23.204.220)
+  dedup.js              — File-based dedup module (sent-log.json)
+  notify-buyers.js      — Notify matched buyers about new deals (DISABLED)
+  deal-follow-up.js     — Follow up on stale deals (DISABLED)
+  README.md             — Deployment and usage docs
 ```
 
 ## Key IDs & Config
@@ -89,21 +94,27 @@ Do NOT enable any cron jobs or outbound messaging until individually tested.
 #### Phase 1: Fix & Stabilize (CURRENT)
 - [x] Fix homepage — add dynamic Hot Markets section from buyer-demand API
 - [x] Fix buyers-map AZ filter — state-only buyers not showing, MIN_BUYERS threshold too high
-- [ ] Implement file-based dedup (sent-log.json) for notify-buyers cron
-- [ ] Implement file-based dedup (sent-log.json) for deal-follow-up cron
+- [x] Fix join form — field names were mismatched (fullName→full_name, role→partner_type, etc.) — form was completely broken
+- [x] Implement file-based dedup (sent-log.json) — cron/dedup.js module created
+- [x] Create skeleton cron scripts (notify-buyers.js, deal-follow-up.js) with dedup integration
+- [x] Audit form field mapping across all forms (join, contact, submit-deal)
+- [x] Audit buyer-demand.js — found dead CF.TARGET_MARKETS reference (non-critical)
 
 #### Phase 2: Audit Each Automation
-- [ ] Audit notify-buyers — test in isolation, verify matching logic, check for duplicate sends
-- [ ] Audit deal-follow-up — test in isolation, verify timing logic, check for duplicate sends
+- [ ] Audit notify-buyers — implement matching logic in cron/notify-buyers.js, test in isolation
+- [ ] Audit deal-follow-up — implement follow-up logic in cron/deal-follow-up.js, test in isolation
 - [ ] Audit each GHL workflow — document what each does, verify triggers
 - [ ] Audit watchdog — verify it reports correctly
 
 #### Phase 3: Test Forms End-to-End
-- [ ] Test signup form (partner-onboard.js) — submit → GHL contact + tags + pipeline + notifications
+- [x] Audit signup form (partner-onboard.js) — field mapping fixed, code reviewed
+- [x] Audit contact form handler — field mapping verified, code reviewed
+- [x] Audit deal submission form (dispo-buddy-submit.js) — field mapping verified, code reviewed
+- [ ] LIVE TEST signup form — submit → GHL contact + tags + pipeline + notifications
+- [ ] LIVE TEST contact form — submit → GHL contact + auto-reply + internal alert
+- [ ] LIVE TEST deal submission form — full flow including Notion
 - [ ] Test buy box / buying criteria form — verify custom fields map correctly
 - [ ] Test offer form — verify pipeline stage updates
-- [ ] Test inquiry form — verify contact form handler
-- [ ] Test deal submission form (dispo-buddy-submit.js) — full flow including Notion
 
 #### Phase 4: Re-enable Automations (ONE AT A TIME)
 - [ ] Re-enable notify-buyers with dedup — monitor for 24hrs
