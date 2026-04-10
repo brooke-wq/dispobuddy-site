@@ -9,7 +9,7 @@
  * Optional (for internal alerts):
  *   INTERNAL_ALERT_EMAIL — Email for internal alerts (e.g. brooke@mydealpros.com)
  *
- * Internal SMS alerts are hardcoded to the Dispo Buddy line (+14808325332).
+ * Internal SMS alerts are hardcoded to the Dispo Buddy line (+14808425332).
  *
  * Pipeline IDs (hardcoded — confirmed from GHL):
  *   Pipeline: "3. JV Deals"   → XbZojO2rHmYtYa8C0yUP
@@ -19,7 +19,7 @@
 const GHL_BASE = 'https://services.leadconnectorhq.com';
 const JV_PIPELINE_ID = 'XbZojO2rHmYtYa8C0yUP';
 const JV_STAGE_NEW   = 'cf2388f0-fdbf-4fb1-b633-86569034fcce';
-const INTERNAL_ALERT_PHONE = '+14808325332';
+const INTERNAL_ALERT_PHONE = '+14808425332';
 
 // ─────────────────────────────────────────────────────────────
 // MAIN HANDLER
