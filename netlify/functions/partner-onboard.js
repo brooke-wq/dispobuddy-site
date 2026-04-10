@@ -11,13 +11,15 @@
  *   GHL_LOCATION_ID      — GHL Location ID
  *
  * Optional (for internal alerts):
- *   INTERNAL_ALERT_PHONE — Brooke's phone for internal SMS alerts
- *   INTERNAL_ALERT_EMAIL — Brooke's email for internal alerts
+ *   INTERNAL_ALERT_EMAIL — Email for internal alerts
+ *
+ * Internal SMS alerts are hardcoded to the Dispo Buddy line (+14808325332).
  */
 
 const GHL_BASE = 'https://services.leadconnectorhq.com';
 const JV_PIPELINE_ID = 'XbZojO2rHmYtYa8C0yUP';
 const JV_STAGE_NEW   = 'cf2388f0-fdbf-4fb1-b633-86569034fcce';
+const INTERNAL_ALERT_PHONE = '+14808325332';
 
 // ─────────────────────────────────────────────────────────────
 // MAIN HANDLER
@@ -114,20 +116,17 @@ async function handlePartnerOnboarding(body, headers, locationId) {
     );
 
     // 4c. Internal SMS alert
-    const alertPhone = process.env.INTERNAL_ALERT_PHONE;
-    if (alertPhone) {
-      notifs.push(
-        sendInternalSMS(alertPhone, headers, locationId,
-          `👤 NEW PARTNER\n` +
-          `Name: ${body.full_name}\n` +
-          `Type: ${body.partner_type}\n` +
-          `Markets: ${body.primary_markets || 'N/A'}\n` +
-          `Volume: ${body.monthly_volume || 'N/A'}\n` +
-          `Deal Ready: ${body.deal_ready || 'N/A'}\n` +
-          `Phone: ${body.phone}`
-        ).catch(err => console.warn('Internal SMS failed:', err.message))
-      );
-    }
+    notifs.push(
+      sendInternalSMS(INTERNAL_ALERT_PHONE, headers, locationId,
+        `👤 NEW PARTNER\n` +
+        `Name: ${body.full_name}\n` +
+        `Type: ${body.partner_type}\n` +
+        `Markets: ${body.primary_markets || 'N/A'}\n` +
+        `Volume: ${body.monthly_volume || 'N/A'}\n` +
+        `Deal Ready: ${body.deal_ready || 'N/A'}\n` +
+        `Phone: ${body.phone}`
+      ).catch(err => console.warn('Internal SMS failed:', err.message))
+    );
 
     // 4d. Internal email alert
     const alertEmail = process.env.INTERNAL_ALERT_EMAIL;
@@ -235,18 +234,15 @@ async function handleContactForm(body, headers, locationId) {
     );
 
     // Internal alert
-    const alertPhone = process.env.INTERNAL_ALERT_PHONE;
-    if (alertPhone) {
-      notifs.push(
-        sendInternalSMS(alertPhone, headers, locationId,
-          `📩 CONTACT FORM\n` +
-          `From: ${body.name}\n` +
-          `Subject: ${body.subject || 'N/A'}\n` +
-          `Message: ${(body.message || '').substring(0, 200)}\n` +
-          `Email: ${body.email}${body.phone ? '\nPhone: ' + body.phone : ''}`
-        ).catch(err => console.warn('Internal SMS failed:', err.message))
-      );
-    }
+    notifs.push(
+      sendInternalSMS(INTERNAL_ALERT_PHONE, headers, locationId,
+        `📩 CONTACT FORM\n` +
+        `From: ${body.name}\n` +
+        `Subject: ${body.subject || 'N/A'}\n` +
+        `Message: ${(body.message || '').substring(0, 200)}\n` +
+        `Email: ${body.email}${body.phone ? '\nPhone: ' + body.phone : ''}`
+      ).catch(err => console.warn('Internal SMS failed:', err.message))
+    );
 
     const alertEmail = process.env.INTERNAL_ALERT_EMAIL;
     if (alertEmail) {

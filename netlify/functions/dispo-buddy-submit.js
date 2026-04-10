@@ -7,8 +7,9 @@
  *   GHL_LOCATION_ID      — GHL Location ID
  *
  * Optional (for internal alerts):
- *   INTERNAL_ALERT_PHONE — Brooke's phone for internal SMS alerts (e.g. +14808425332)
- *   INTERNAL_ALERT_EMAIL — Brooke's email for internal alerts (e.g. brooke@mydealpros.com)
+ *   INTERNAL_ALERT_EMAIL — Email for internal alerts (e.g. brooke@mydealpros.com)
+ *
+ * Internal SMS alerts are hardcoded to the Dispo Buddy line (+14808325332).
  *
  * Pipeline IDs (hardcoded — confirmed from GHL):
  *   Pipeline: "3. JV Deals"   → XbZojO2rHmYtYa8C0yUP
@@ -18,6 +19,7 @@
 const GHL_BASE = 'https://services.leadconnectorhq.com';
 const JV_PIPELINE_ID = 'XbZojO2rHmYtYa8C0yUP';
 const JV_STAGE_NEW   = 'cf2388f0-fdbf-4fb1-b633-86569034fcce';
+const INTERNAL_ALERT_PHONE = '+14808325332';
 
 // ─────────────────────────────────────────────────────────────
 // MAIN HANDLER
@@ -109,14 +111,11 @@ exports.handler = async (event) => {
       );
     }
 
-    // 4c. Internal SMS alert to Brooke
-    const internalPhone = process.env.INTERNAL_ALERT_PHONE;
-    if (internalPhone) {
-      notificationPromises.push(
-        sendInternalSMS(internalPhone, headers, locationId, buildInternalAlertSMS(body))
-          .catch(err => console.warn('Internal SMS failed:', err.message))
-      );
-    }
+    // 4c. Internal SMS alert to Dispo Buddy line
+    notificationPromises.push(
+      sendInternalSMS(INTERNAL_ALERT_PHONE, headers, locationId, buildInternalAlertSMS(body))
+        .catch(err => console.warn('Internal SMS failed:', err.message))
+    );
 
     // 4d. Internal email alert to Brooke
     const internalEmail = process.env.INTERNAL_ALERT_EMAIL;
