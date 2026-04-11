@@ -36,25 +36,68 @@ function httpRequest(url, options, body) {
 // ─── GHL CUSTOM FIELD IDS ────────────────────────────────────
 
 var CF = {
-  TARGET_STATES:    'aewzY7iEvZh12JhMVi7E',
-  TARGET_CITIES:    'DbY7dHIXk8YowpaWrxYj',
-  DEAL_STRUCTURES:  '0L0ycmmsEjy6OPDL0rgq',
-  PROPERTY_TYPE:    'HGC6xWLpSqoAQPZr0uwY',
-  MAX_PRICE:        'BcxuopmSK4wA3Z3NyanD',
-  MAX_ENTRY:        'SZmNHA3BQva2AZg00ZNP',
-  MIN_ARV:          'KKGEfgdaqu98yrZYkmoO',
-  EXIT_STRATEGIES:  '98i8EKc3OWYSqS4Qb1nP',
-  BUYER_TYPE:       '95PgdlIYfXYcMymnjsIv',
-  CONTACT_ROLE:     'agG4HMPB5wzsZXiRxfmR',
+  TARGET_STATES:     'aewzY7iEvZh12JhMVi7E',
+  TARGET_CITIES:     'DbY7dHIXk8YowpaWrxYj',
+  DEAL_STRUCTURES:   '0L0ycmmsEjy6OPDL0rgq',
+  PROPERTY_TYPE:     'HGC6xWLpSqoAQPZr0uwY',
+  MAX_PRICE:         'BcxuopmSK4wA3Z3NyanD',
+  MAX_ENTRY:         'SZmNHA3BQva2AZg00ZNP',
+  MIN_ARV:           'KKGEfgdaqu98yrZYkmoO',
+  EXIT_STRATEGIES:   '98i8EKc3OWYSqS4Qb1nP',
+  BUYER_TYPE:        '95PgdlIYfXYcMymnjsIv',
+  CONTACT_ROLE:      'agG4HMPB5wzsZXiRxfmR',
+  // Looked up by merge-tag key (see getCF fallback) since we don't have the 20-char id
+  PURCHASE_TIMELINE: 'purchase_timeline',
 };
 
 // ─── HELPERS ─────────────────────────────────────────────────
 
-function getCF(contact, fieldId) {
+function getCF(contact, fieldIdOrKey) {
   var cfs = contact.customFields || [];
-  var field = cfs.find(function(f) { return f.id === fieldId; });
+  var field = cfs.find(function(f) {
+    if (f.id === fieldIdOrKey) return true;
+    // Fallback: match by merge-tag key when we don't have the 20-char field id
+    if (f.key === fieldIdOrKey || f.fieldKey === fieldIdOrKey) return true;
+    if (f.fieldKey === 'contact.' + fieldIdOrKey) return true;
+    return false;
+  });
   if (!field) return null;
   return field.value;
+}
+
+// ─── PURCHASE TIMELINE CONFIG ────────────────────────────────
+
+// Valid timeline buckets in urgency order (soonest → latest).
+// Must match the exact GHL dropdown labels; matching is case-insensitive.
+var TIMELINE_ORDER = [
+  'Immediate — 0-30 days',
+  'Short-Term — 31-90 days',
+  'Long-Term — Beyond 90 days'
+];
+
+// Buyers whose purchase_timeline matches any of these are dropped from the
+// map entirely (hard filter). Compared lowercased.
+var TIMELINE_EXCLUDE = [
+  'homerun only',
+  'just researching options'
+];
+
+function normalizeTimelineValue(val) {
+  if (val === null || val === undefined) return null;
+  var str = Array.isArray(val) ? String(val[0] || '') : String(val);
+  str = str.trim();
+  return str || null;
+}
+
+// Map a raw value to its canonical label in TIMELINE_ORDER (case-insensitive),
+// or return the trimmed original if it doesn't match any known bucket.
+function canonicalizeTimeline(raw) {
+  if (!raw) return null;
+  var lower = raw.toLowerCase();
+  for (var i = 0; i < TIMELINE_ORDER.length; i++) {
+    if (TIMELINE_ORDER[i].toLowerCase() === lower) return TIMELINE_ORDER[i];
+  }
+  return raw;
 }
 
 // ─── IN-MEMORY CACHE (10 min TTL) ───────────────────────────
@@ -122,7 +165,15 @@ async function fetchAllBuyers(apiKey, locationId) {
           isBuyer = true;
         }
       }
-      if (isBuyer) allBuyers.push(contact);
+      if (isBuyer) {
+        // Hard-filter: drop buyers whose purchase timeline is "Homerun Only"
+        // or "Just researching options" — they don't represent active demand.
+        var rawTimeline = normalizeTimelineValue(getCF(contact, CF.PURCHASE_TIMELINE));
+        if (rawTimeline && TIMELINE_EXCLUDE.indexOf(rawTimeline.toLowerCase()) !== -1) {
+          return;
+        }
+        allBuyers.push(contact);
+      }
     });
 
     if (result.body.meta && result.body.meta.nextPageUrl) {
@@ -185,6 +236,7 @@ function aggregateBuyerData(buyers) {
   var globalPropertyTypes = {};
   var globalExitStrategies = {};
   var globalBuyerTypes = {};
+  var globalTimelines = {};
   var totalBuyers = buyers.length;
 
   buyers.forEach(function(contact) {
@@ -197,6 +249,9 @@ function aggregateBuyerData(buyers) {
     var maxEntry = parseMonetary(getCF(contact, CF.MAX_ENTRY));
     var targetMarkets = getCF(contact, CF.TARGET_MARKETS);
     var buyerType = getCF(contact, CF.BUYER_TYPE);
+    var purchaseTimeline = canonicalizeTimeline(
+      normalizeTimelineValue(getCF(contact, CF.PURCHASE_TIMELINE))
+    );
 
     // Global aggregations
     if (dealStructures && Array.isArray(dealStructures)) {
@@ -210,6 +265,9 @@ function aggregateBuyerData(buyers) {
     }
     if (buyerType) {
       incrementMap(globalBuyerTypes, Array.isArray(buyerType) ? buyerType[0] : String(buyerType));
+    }
+    if (purchaseTimeline) {
+      incrementMap(globalTimelines, purchaseTimeline);
     }
 
     // Parse TARGET_MARKETS (free text) into additional cities if no TARGET_CITIES
@@ -252,6 +310,7 @@ function aggregateBuyerData(buyers) {
             dealTypes: {},
             propertyTypes: {},
             exitStrategies: {},
+            timelines: {},
             prices: [],
             entries: []
           };
@@ -268,6 +327,9 @@ function aggregateBuyerData(buyers) {
         }
         if (exitStrategies && Array.isArray(exitStrategies)) {
           exitStrategies.forEach(function(es) { incrementMap(m.exitStrategies, es); });
+        }
+        if (purchaseTimeline) {
+          incrementMap(m.timelines, purchaseTimeline);
         }
         if (maxPrice > 0) m.prices.push(maxPrice);
         if (maxEntry > 0) m.entries.push(maxEntry);
@@ -299,6 +361,7 @@ function aggregateBuyerData(buyers) {
       dealTypes: m.dealTypes,
       propertyTypes: m.propertyTypes,
       exitStrategies: m.exitStrategies,
+      timelines: m.timelines,
       priceRange: computeRange(m.prices),
       entryRange: computeRange(m.entries)
     });
@@ -332,6 +395,15 @@ function aggregateBuyerData(buyers) {
   });
   statesSummary.sort(function(a, b) { return b.buyerCount - a.buyerCount; });
 
+  // Build ordered timelines summary (urgency order first, then any unexpected values)
+  var timelinesSummary = {};
+  TIMELINE_ORDER.forEach(function(label) {
+    if (globalTimelines[label]) timelinesSummary[label] = globalTimelines[label];
+  });
+  Object.keys(globalTimelines).forEach(function(label) {
+    if (timelinesSummary[label] === undefined) timelinesSummary[label] = globalTimelines[label];
+  });
+
   return {
     totalBuyers: totalBuyers,
     lastUpdated: new Date().toISOString(),
@@ -341,6 +413,7 @@ function aggregateBuyerData(buyers) {
     propertyTypesSummary: globalPropertyTypes,
     exitStrategiesSummary: globalExitStrategies,
     buyerTypesSummary: globalBuyerTypes,
+    timelinesSummary: timelinesSummary,
     totalMarkets: marketsArray.length
   };
 }
