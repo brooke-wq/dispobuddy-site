@@ -425,6 +425,7 @@ function buildContactPayload(d, locationId) {
   cf('sf_balloon',                    d.sf_balloon);
   cf('dscr_loan_amount',              d.dscr_loan_amount);
   cf('important_details', d.important_details);
+  cf('referred_by_affiliate', d.affiliate_id);
 
   // Property details (if GHL custom fields exist for these)
   cf('property_type', d.property_type);
@@ -469,6 +470,7 @@ function buildTags(d) {
   const contract = (d.do_you_have_the_property_under_contract || '').toLowerCase();
   if (contract.includes('direct to seller') || contract.includes('agent')) tags.push('db-direct-to-seller');
   if (contract.includes('jv agreement')) tags.push('db-jv-with-wholesaler');
+  if (d.affiliate_id) tags.push('db-affiliate-referred');
 
   return [...new Set(tags)];
 }

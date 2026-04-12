@@ -1394,6 +1394,10 @@ img{max-width:100%;display:block}
       data[k] = utmData[k];
     });
 
+    // Attach affiliate attribution if present
+    var affId = (window.DBAffiliate && window.DBAffiliate.getId) ? window.DBAffiliate.getId() : '';
+    if (affId) data.affiliate_id = affId;
+
     return data;
   }
 
@@ -1555,5 +1559,6 @@ img{max-width:100%;display:block}
 
 })();
 </script>
+<script src="/affiliate.js" defer></script>
 </body>
 </html>
