@@ -99,24 +99,11 @@
   to = "/affiliate-terms.html"
   status = 200
 
-# ── SOP viewer (force = true so the 404 catch-all doesn't win) ──
+# ── SOP viewer (same pattern as every other page) ──
 [[redirects]]
   from = "/sops"
-  to = "/sops/index.html"
+  to = "/ops.html"
   status = 200
-  force = true
-
-[[redirects]]
-  from = "/sops/"
-  to = "/sops/index.html"
-  status = 200
-  force = true
-
-[[redirects]]
-  from = "/sops/index"
-  to = "/sops/index.html"
-  status = 200
-  force = true
 
 # ── 404 fallback ──
 [[redirects]]

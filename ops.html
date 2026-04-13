@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DispoBuddy — Operations Manual</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<style>
+:root{
+  --navy:#0D1F3C;--navy2:#0a1828;--navy3:#132848;
+  --orange:#F7941D;--orange-dark:#d97c0e;
+  --blue:#29ABE2;--blue-dark:#1a8bbf;--blue-light:#EBF8FF;
+  --green:#22c55e;--red:#ef4444;
+  --white:#fff;--bg:#F4F6F9;--bg-section:#EEF2F6;
+  --text:#0D1F3C;--text-mid:#4A6070;--text-light:#718096;
+  --border:#E2E8F0;
+  --r:12px;--r-sm:8px;
+  --font:'Poppins',sans-serif;
+  --sidebar-w:280px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--font);color:var(--text);background:var(--bg);line-height:1.6;-webkit-font-smoothing:antialiased}
+
+/* ── LAYOUT ────────────────── */
+.app{display:flex;min-height:100vh}
+.sidebar{width:var(--sidebar-w);background:var(--navy2);color:var(--white);position:fixed;top:0;left:0;bottom:0;overflow-y:auto;z-index:100;transition:transform .3s}
+.main{margin-left:var(--sidebar-w);flex:1;min-width:0}
+
+/* ── SIDEBAR ───────────────── */
+.sb-header{padding:20px 20px 16px;border-bottom:1px solid rgba(255,255,255,.08)}
+.sb-header img{height:36px;margin-bottom:8px}
+.sb-header h2{font-size:13px;font-weight:600;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.08em}
+.sb-section{padding:12px 0}
+.sb-label{padding:8px 20px 4px;font-size:10px;font-weight:700;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:.1em}
+.sb-link{display:block;padding:7px 20px 7px 20px;font-size:12.5px;font-weight:500;color:rgba(255,255,255,.55);cursor:pointer;transition:all .15s;border-left:3px solid transparent;text-decoration:none}
+.sb-link:hover{color:var(--white);background:rgba(255,255,255,.04)}
+.sb-link.active{color:var(--white);background:rgba(41,171,226,.12);border-left-color:var(--blue)}
+.sb-link .num{color:rgba(255,255,255,.25);font-size:11px;margin-right:6px;font-weight:600}
+.sb-back{display:flex;align-items:center;gap:6px;padding:12px 20px;font-size:12px;font-weight:600;color:rgba(255,255,255,.4);text-decoration:none;border-bottom:1px solid rgba(255,255,255,.06);transition:color .15s}
+.sb-back:hover{color:var(--white)}
+.sb-back svg{width:14px;height:14px}
+
+/* ── TOPBAR (mobile) ───────── */
+.topbar{display:none;position:fixed;top:0;left:0;right:0;height:56px;background:var(--navy2);z-index:200;align-items:center;padding:0 16px;gap:12px}
+.topbar img{height:28px}
+.topbar h2{font-size:12px;color:rgba(255,255,255,.5);font-weight:600}
+.hamburger{display:none;background:none;border:none;cursor:pointer;padding:4px}
+.hamburger span{display:block;width:20px;height:2px;background:var(--white);border-radius:2px;margin:4px 0;transition:all .3s}
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:99}
+
+/* ── CONTENT ───────────────── */
+.content{max-width:860px;margin:0 auto;padding:40px 40px 80px}
+.content h1{font-size:clamp(1.5rem,3vw,2.2rem);font-weight:800;color:var(--navy);letter-spacing:-.02em;margin-bottom:8px;line-height:1.2}
+.content h2{font-size:1.25rem;font-weight:700;color:var(--navy);margin-top:40px;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid var(--border)}
+.content h3{font-size:1.05rem;font-weight:700;color:var(--navy);margin-top:28px;margin-bottom:8px}
+.content h4{font-size:.95rem;font-weight:700;color:var(--text-mid);margin-top:20px;margin-bottom:6px}
+.content p{margin-bottom:14px;color:var(--text-mid);font-size:14px;line-height:1.8}
+.content ul,.content ol{margin:0 0 16px 20px;color:var(--text-mid);font-size:14px;line-height:1.8}
+.content li{margin-bottom:4px}
+.content li ul,.content li ol{margin-top:4px;margin-bottom:4px}
+.content strong{color:var(--text);font-weight:700}
+.content em{font-style:italic}
+.content a{color:var(--blue);text-decoration:none;font-weight:500}
+.content a:hover{text-decoration:underline}
+.content blockquote{border-left:4px solid var(--orange);background:rgba(247,148,29,.05);padding:12px 16px;margin:16px 0;border-radius:0 var(--r-sm) var(--r-sm) 0;font-size:13px;color:var(--text-mid)}
+.content code{background:rgba(41,171,226,.08);color:var(--blue-dark);padding:2px 6px;border-radius:4px;font-size:12.5px;font-family:'SFMono-Regular',Consolas,'Liberation Mono',Menlo,monospace}
+.content pre{background:var(--navy);color:#e2e8f0;padding:16px 20px;border-radius:var(--r-sm);overflow-x:auto;margin:16px 0;font-size:12.5px;line-height:1.6}
+.content pre code{background:none;color:inherit;padding:0;font-size:inherit}
+.content table{width:100%;border-collapse:collapse;margin:16px 0;font-size:13px}
+.content thead th{background:var(--navy);color:var(--white);padding:10px 12px;text-align:left;font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.03em}
+.content tbody td{padding:10px 12px;border-bottom:1px solid var(--border);color:var(--text-mid);vertical-align:top}
+.content tbody tr:hover{background:rgba(41,171,226,.03)}
+.content hr{border:none;border-top:2px solid var(--border);margin:32px 0}
+.content img{max-width:100%;border-radius:var(--r-sm)}
+
+/* ── CHECKLIST STYLE ───────── */
+.content input[type="checkbox"]{margin-right:6px;accent-color:var(--blue)}
+
+/* ── LOADING ───────────────── */
+.loading{display:flex;align-items:center;justify-content:center;height:40vh;color:var(--text-light);font-size:14px;font-weight:500}
+.loading::after{content:'';width:20px;height:20px;border:2px solid var(--border);border-top-color:var(--blue);border-radius:50%;animation:spin .6s linear infinite;margin-left:10px}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── BREADCRUMB ────────────── */
+.breadcrumb{font-size:12px;color:var(--text-light);margin-bottom:16px;font-weight:500}
+.breadcrumb a{color:var(--blue);text-decoration:none}
+.breadcrumb a:hover{text-decoration:underline}
+
+/* ── PRINT ─────────────────── */
+@media print{
+  .sidebar,.topbar,.overlay,.breadcrumb{display:none!important}
+  .main{margin-left:0!important}
+  .content{max-width:100%;padding:20px}
+}
+
+/* ── RESPONSIVE ────────────── */
+@media(max-width:768px){
+  .sidebar{transform:translateX(-100%)}
+  .sidebar.open{transform:translateX(0)}
+  .topbar{display:flex}
+  .hamburger{display:block}
+  .main{margin-left:0}
+  .content{padding:72px 16px 60px}
+  .overlay.on{display:block}
+}
+</style>
+</head>
+<body>
+
+<!-- MOBILE TOPBAR -->
+<div class="topbar">
+  <button class="hamburger" id="menuBtn" aria-label="Menu"><span></span><span></span><span></span></button>
+  <img src="/logo-light.svg" alt="Dispo Buddy">
+  <h2>Ops Manual</h2>
+</div>
+<div class="overlay" id="overlay"></div>
+
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <nav class="sidebar" id="sidebar">
+    <a href="/" class="sb-back">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+      Back to dispobuddy.com
+    </a>
+    <div class="sb-header">
+      <img src="/logo-light.svg" alt="Dispo Buddy">
+      <h2>Operations Manual</h2>
+    </div>
+
+    <div class="sb-section">
+      <div class="sb-label">Start Here</div>
+      <a class="sb-link active" data-file="index.md">Overview &amp; RACI</a>
+      <a class="sb-link" data-file="00-bottlenecks.md"><span class="num">00</span> Bottleneck Analysis</a>
+    </div>
+
+    <div class="sb-section">
+      <div class="sb-label">A. Deal Flow</div>
+      <a class="sb-link" data-file="01-deal-intake-triage.md"><span class="num">01</span> Deal Intake &amp; Triage</a>
+      <a class="sb-link" data-file="02-deal-underwriting.md"><span class="num">02</span> Deal Underwriting</a>
+      <a class="sb-link" data-file="03-jv-agreement.md"><span class="num">03</span> JV Agreement</a>
+      <a class="sb-link" data-file="04-deal-packaging.md"><span class="num">04</span> Deal Packaging</a>
+      <a class="sb-link" data-file="05-buyer-matching-outreach.md"><span class="num">05</span> Buyer Matching</a>
+      <a class="sb-link" data-file="06-offer-management-negotiation.md"><span class="num">06</span> Offer Management</a>
+      <a class="sb-link" data-file="07-closing-title-coordination.md"><span class="num">07</span> Closing &amp; Title</a>
+    </div>
+
+    <div class="sb-section">
+      <div class="sb-label">B. Partner &amp; Network</div>
+      <a class="sb-link" data-file="08-partner-onboarding.md"><span class="num">08</span> Partner Onboarding</a>
+      <a class="sb-link" data-file="09-buyer-network-intake.md"><span class="num">09</span> Buyer Network Intake</a>
+      <a class="sb-link" data-file="10-buyer-network-hygiene.md"><span class="num">10</span> Buyer Hygiene</a>
+      <a class="sb-link" data-file="11-dead-deal-rejection.md"><span class="num">11</span> Dead Deal / Rejection</a>
+    </div>
+
+    <div class="sb-section">
+      <div class="sb-label">C. Systems &amp; Back-Office</div>
+      <a class="sb-link" data-file="12-ghl-crm-hygiene.md"><span class="num">12</span> GHL CRM Hygiene</a>
+      <a class="sb-link" data-file="13-notion-deal-tracker.md"><span class="num">13</span> Notion Deal Tracker</a>
+      <a class="sb-link" data-file="14-partner-communication.md"><span class="num">14</span> Partner Communication</a>
+      <a class="sb-link" data-file="15-compliance.md"><span class="num">15</span> Compliance</a>
+      <a class="sb-link" data-file="16-website-functions-deploy.md"><span class="num">16</span> Website Deploy</a>
+    </div>
+
+    <div class="sb-section">
+      <div class="sb-label">D. Growth &amp; Admin</div>
+      <a class="sb-link" data-file="17-marketing-lead-generation.md"><span class="num">17</span> Marketing</a>
+      <a class="sb-link" data-file="18-financial-payout-reconciliation.md"><span class="num">18</span> Finance / Payouts</a>
+      <a class="sb-link" data-file="19-weekly-operations-cadence.md"><span class="num">19</span> Weekly Cadence</a>
+    </div>
+
+    <div style="padding:20px;font-size:11px;color:rgba(255,255,255,.2);border-top:1px solid rgba(255,255,255,.06);margin-top:8px">
+      Deal Pros LLC &copy; 2025
+    </div>
+  </nav>
+
+  <!-- MAIN CONTENT -->
+  <div class="main">
+    <div class="content" id="content">
+      <div class="loading">Loading</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+(function(){
+  var content = document.getElementById('content');
+  var sidebar = document.getElementById('sidebar');
+  var overlay = document.getElementById('overlay');
+  var menuBtn = document.getElementById('menuBtn');
+  var links   = document.querySelectorAll('.sb-link');
+  var cache   = {};
+
+  // ── MARKDOWN RENDERER CONFIG ──
+  marked.setOptions({
+    breaks: true,
+    gfm: true
+  });
+
+  // ── LOAD A FILE ──
+  function load(file) {
+    // Update active state
+    links.forEach(function(l){ l.classList.remove('active'); });
+    var active = document.querySelector('[data-file="' + file + '"]');
+    if (active) active.classList.add('active');
+
+    // Update hash
+    history.pushState(null, '', '#' + file.replace('.md',''));
+
+    // Close mobile menu
+    sidebar.classList.remove('open');
+    overlay.classList.remove('on');
+
+    // Show loading
+    if (!cache[file]) {
+      content.innerHTML = '<div class="loading">Loading</div>';
+    }
+
+    // Fetch and render
+    if (cache[file]) {
+      render(cache[file], file);
+    } else {
+      fetch('/sops/' + file)
+        .then(function(r){
+          if (!r.ok) throw new Error('Not found');
+          return r.text();
+        })
+        .then(function(md){
+          cache[file] = md;
+          render(md, file);
+        })
+        .catch(function(){
+          content.innerHTML = '<div class="breadcrumb"><a href="#index">Operations Manual</a></div><h1>Not Found</h1><p>Could not load ' + file + '</p>';
+        });
+    }
+  }
+
+  function render(md, file) {
+    var html = marked.parse(md);
+
+    // Rewrite internal .md links to hash links
+    html = html.replace(/href="\.\/([^"]+)\.md"/g, 'href="#$1"');
+    html = html.replace(/href="([^"#][^"]*?)\.md"/g, 'href="#$1"');
+
+    // Add breadcrumb
+    var breadcrumb = '';
+    if (file !== 'index.md') {
+      breadcrumb = '<div class="breadcrumb"><a href="#index">Operations Manual</a> / ' + file.replace('.md','') + '</div>';
+    }
+
+    content.innerHTML = breadcrumb + html;
+
+    // Make checkboxes from [ ] and [x]
+    content.querySelectorAll('li').forEach(function(li){
+      var t = li.innerHTML;
+      if (t.indexOf('[ ]') === 0) {
+        li.innerHTML = '<input type="checkbox" disabled>' + t.slice(3);
+        li.style.listStyle = 'none';
+        li.style.marginLeft = '-20px';
+      } else if (t.indexOf('[x]') === 0 || t.indexOf('[X]') === 0) {
+        li.innerHTML = '<input type="checkbox" checked disabled>' + t.slice(3);
+        li.style.listStyle = 'none';
+        li.style.marginLeft = '-20px';
+      }
+    });
+
+    // Handle internal hash links
+    content.querySelectorAll('a[href^="#"]').forEach(function(a){
+      a.addEventListener('click', function(e){
+        var href = a.getAttribute('href');
+        // If it looks like a file reference (not a heading anchor)
+        if (href.match(/^#\d{2}-/) || href === '#index' || href.match(/^#00-/)) {
+          e.preventDefault();
+          load(href.slice(1) + '.md');
+          window.scrollTo(0,0);
+        }
+      });
+    });
+
+    window.scrollTo(0,0);
+  }
+
+  // ── SIDEBAR CLICK ──
+  links.forEach(function(link){
+    link.addEventListener('click', function(e){
+      e.preventDefault();
+      load(link.getAttribute('data-file'));
+    });
+  });
+
+  // ── MOBILE MENU ──
+  menuBtn.addEventListener('click', function(){
+    sidebar.classList.toggle('open');
+    overlay.classList.toggle('on');
+  });
+  overlay.addEventListener('click', function(){
+    sidebar.classList.remove('open');
+    overlay.classList.remove('on');
+  });
+
+  // ── HASH ROUTING ──
+  function route() {
+    var hash = location.hash.slice(1);
+    if (hash && hash !== 'index') {
+      // Handle anchors within bottlenecks (e.g. #b1--underwriting...)
+      if (hash.indexOf('--') > -1 && !hash.match(/^\d{2}-/)) {
+        // This is probably a heading anchor within the current page, let the browser handle it
+        return;
+      }
+      load(hash + '.md');
+    } else {
+      load('index.md');
+    }
+  }
+  window.addEventListener('hashchange', route);
+
+  // ── INIT ──
+  route();
+})();
+</script>
+</body>
+</html>
