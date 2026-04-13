@@ -78,6 +78,11 @@ Tags are applied automatically by the Netlify functions and manually by the VA. 
 - `asset_mobile_home`
 - `asset_commercial`
 
+### Affiliate tags
+- `db-affiliate` — is an affiliate in our program
+- `affiliate-active` — currently active affiliate
+- `db-affiliate-referred` — this partner/lead was referred by an affiliate
+
 ### Status tags
 - `first_deal` — partner's first submission
 - `repeat_partner` — ≥ 2 closed deals
@@ -104,6 +109,29 @@ These map 1:1 to the field IDs in `netlify/functions/buyer-demand.js`. Every buy
 | Purchase Timeline | (by key: `purchase_timeline`) | select | yes |
 
 See [SOP 09](./09-buyer-network-intake.md) for the canonical intake script that captures all of these.
+
+## Canonical custom fields (affiliates)
+
+These are created by `netlify/functions/affiliate-signup.js` and updated by `affiliate-track.js`.
+
+| Field name (GHL) | Type | Set by |
+|---|---|---|
+| `affiliate_id` | text | signup function |
+| `affiliate_referral_link` | text | signup function |
+| `affiliate_status` | select (active/paused/terminated) | signup function / manual |
+| `affiliate_joined_at` | date | signup function |
+| `affiliate_payout_method` | text | post-approval (manual) |
+| `affiliate_payout_details` | text | post-approval (manual) |
+| `affiliate_clicks` | number | track function |
+| `affiliate_signups` | number | track function |
+| `affiliate_deals_submitted` | number | track function |
+| `affiliate_deals_closed` | number | track function |
+| `affiliate_commission_earned` | number | track function |
+| `affiliate_commission_paid` | number | manual (on payout) |
+| `affiliate_last_event` | text | track function |
+| `referred_by_affiliate` | text | submit / onboard functions (on the referred partner's record) |
+
+See [SOP 20](./20-affiliate-program.md) for the full affiliate management workflow.
 
 ## Step-by-step daily hygiene procedure
 

@@ -108,6 +108,17 @@ Patterns → actions:
 3. **Customer complaints** from last week — resolution status?
 4. **Anything weird** anywhere that someone should eyeball?
 
+### Minute 52-55 — Affiliate program health
+
+1. **New affiliate signups last week** — count
+2. **Total affiliate clicks last week** — sum of `affiliate_clicks` deltas (or pull from GHL)
+3. **Affiliate-referred partners last week** — count of contacts tagged `db-affiliate-referred` created this week
+4. **Affiliate-referred deals closed last week** — count + GCI
+5. **Commission owed** — sum of `affiliate_commission_earned - affiliate_commission_paid` across all active affiliates. If the 15th is this week, confirm payout list is ready.
+6. **Any affiliate flags** — self-referral suspicion, FTC violations, complaints
+
+See [SOP 20](./20-affiliate-program.md) for full affiliate management.
+
 ### Minute 55-60 — This week's priorities
 
 Brooke picks **3 priorities** for this week. That's it. Three. Not ten.
@@ -197,7 +208,16 @@ Copy this verbatim to create a new dashboard each Monday. Title format: `[YYYY-M
 - Marketing spend last week: $X
 - Red flags: [list or "none"]
 
-## 7. Compliance / Site / Exceptions
+## 7. Affiliate program
+- New affiliate signups: N
+- Affiliate clicks last week: N
+- Affiliate-referred partners: N
+- Affiliate-referred deals closed: N ($X GCI)
+- Commission owed (all affiliates): $X
+- Payout due this month (if 15th upcoming): $X to N affiliates
+- Flags: [self-referral, FTC violation, or "none"]
+
+## 8. Compliance / Site / Exceptions
 - Compliance escalations: [list or "none"]
 - Site / function errors: [list or "none"]
 - Complaints: [list or "none"]

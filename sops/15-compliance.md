@@ -136,6 +136,26 @@ Real estate wholesaling is regulated differently in every state. DispoBuddy acce
 2. Update coverage when deal volume or state footprint materially changes.
 3. Proof of insurance stored in `/Drive/DispoBuddy/Insurance/`.
 
+### 9. Affiliate program compliance
+
+**FTC disclosure:** Affiliates who promote Dispo Buddy publicly (social media, blogs, YouTube, email) must disclose their financial relationship. Our affiliate terms (`affiliate-terms.html`) require this. If we discover an affiliate promoting without disclosure:
+1. First violation: send a warning SMS + email with the FTC disclosure requirement
+2. Second violation: pause the affiliate (`affiliate_status` → `paused`)
+3. Third violation: terminate
+
+**Prohibited affiliate activities** (from the terms):
+- Spam, unsolicited messaging, bulk SMS/email to purchased lists
+- Misleading claims about earnings, guarantees, or our services
+- Bidding on "Dispo Buddy" brand terms in paid search
+- Cookie stuffing, click fraud, or deceptive tracking
+- Impersonating Dispo Buddy or Deal Pros LLC
+
+**Self-referral detection:** An affiliate cannot refer themselves or their own business entities. If the affiliate's email matches a referred partner's email, or the same phone number appears on both records → flag for Brooke and withhold the commission pending investigation.
+
+**Affiliate consent:** The signup form at `/affiliates` includes a consent checkbox and a link to the full terms. This is version-controlled in git.
+
+**Quarterly audit addition:** Add to the quarterly compliance review: pull 5 random affiliate payouts, verify the commission math matches the deal values, verify the 12-month trailing window was enforced, verify no self-referrals.
+
 ## Step-by-step compliance review procedure
 
 **Quarterly compliance review** (first Monday of Jan / Apr / Jul / Oct), run by Brooke:

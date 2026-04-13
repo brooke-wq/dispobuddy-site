@@ -73,7 +73,13 @@ Within 2 hours of the internal alert:
    - Role-specific: `partner_wholesaler` / `partner_bird_dog` / `partner_agent` / `partner_investor`
    - Volume-specific: `partner_low_volume` (1-3/mo) / `mid_volume` (4-10) / `high_volume` (11+)
    - `source_[source]` from the form
-5. **If they said "Got a deal ready now? = Yes"**:
+   - If `affiliate_id` is present in the form payload: `db-affiliate-referred` (the backend does this automatically via `partner-onboard.js`)
+5. **If the partner was referred by an affiliate:**
+   - The `referred_by_affiliate` custom field is already populated by the backend with the affiliate's ID
+   - Verify the tag `db-affiliate-referred` is on the contact
+   - When this partner closes their first deal, the affiliate earns the $200 bonus — see [SOP 20](./20-affiliate-program.md)
+   - Do NOT tell the partner they were affiliate-referred; that's between us and the affiliate
+6. **If they said "Got a deal ready now? = Yes"**:
    - Tag `hot_prospect`
    - Schedule an intro call within 48 hours (Brooke for high-volume, VA for low-volume)
    - Send the Day 5 SMS *immediately* — don't wait 5 days. They're ready, meet them there.

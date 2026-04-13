@@ -88,6 +88,7 @@ We promise publicly (and these SOPs exist to make sure we actually deliver on):
 - [17 — Marketing & Lead Generation](./17-marketing-lead-generation.md)
 - [18 — Financial / Payout Reconciliation](./18-financial-payout-reconciliation.md)
 - [19 — Weekly Operations Cadence](./19-weekly-operations-cadence.md)
+- [20 — Affiliate Program Management](./20-affiliate-program.md)
 
 ---
 
@@ -116,6 +117,8 @@ We promise publicly (and these SOPs exist to make sure we actually deliver on):
 | Marketing content (SOP 17) | **R/A** | C | C |
 | Bookkeeping + reconciliation (SOP 18) | A | — | **R** |
 | Weekly cadence review (SOP 19) | **R/A** | I | I |
+| Affiliate approval + payouts (SOP 20) | **R/A** | C | **R** (payouts) |
+| Affiliate fraud detection (SOP 20) | **R/A** | I | — |
 
 R = Responsible (does the work), A = Accountable (sign-off), C = Consulted, I = Informed.
 
