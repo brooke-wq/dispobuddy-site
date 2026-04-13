@@ -1,7 +1,7 @@
 # 09 — Buyer Network Intake
 
 ## Purpose
-Our matching engine is only as good as the buyer data feeding it. This SOP defines the canonical buybox fields we capture per asset class, the intake script we use on every buyer call, and how the data lands in GHL so [SOP 05](./05-buyer-matching-outreach.md) can actually query it.
+Our matching engine is only as good as the buyer data feeding it. Buyers discover us primarily through **Terms For Sale** (deals.termsforsale.com) — our buyer-facing platform where they sign up for the buyers list, browse active deals, and submit offers. They also come through direct outreach, referrals, and social. This SOP defines the canonical buybox fields we capture per asset class, the intake script we use on every buyer call, and how the data lands in GHL so [SOP 05](./05-buyer-matching-outreach.md) can actually query it.
 
 ## Owner / Roles
 - **Accountable:** Brooke (until a dedicated buyer-network manager is hired)
@@ -10,6 +10,8 @@ Our matching engine is only as good as the buyer data feeding it. This SOP defin
 
 ## Trigger
 - A new buyer opts in (website form, referral, Facebook group, conference)
+- A new buyer signs up through **Terms For Sale** (deals.termsforsale.com) — the primary entry point for buyers
+- A new buyer opts in via referral, social, or conference
 - An existing buyer wants to update their buybox
 - A partner who closes deals with us expresses interest in buying too (tag `partner_and_buyer`)
 

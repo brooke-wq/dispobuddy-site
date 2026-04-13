@@ -1,7 +1,7 @@
 # 05 — Buyer Matching & Outreach
 
 ## Purpose
-This is the highest-leverage step in the business. A great deal with no matched buyers is worth zero. This SOP turns the ad-hoc "who do I know who might want this" habit into a deterministic query + cadenced outreach that a VA can run on autopilot.
+This is the highest-leverage step in the business. A great deal with no matched buyers is worth zero. Deals are marketed through **Terms For Sale** (deals.termsforsale.com) — our buyer-facing platform — plus direct SMS/email outreach to matched buyers in GHL. This SOP turns the ad-hoc "who do I know who might want this" habit into a deterministic query + cadenced outreach that a VA can run on autopilot.
 
 ## Owner / Roles
 - **Accountable:** Brooke
@@ -57,15 +57,22 @@ Within the matched list, rank buyers in this order:
 
 The top 3 ranked buyers get a **direct SMS + personal message from Brooke** or a senior VA (not a blast). The rest get the standard outreach sequence.
 
-### Step 3 — Send Day 0 outreach
+### Step 3 — Confirm the deal is live on Terms For Sale
+Before any outreach, verify:
+1. The deal listing is live on **deals.termsforsale.com** (created in [SOP 04](./04-deal-packaging.md))
+2. Photos, numbers, and deal structure are all populated
+3. The listing URL is saved in the GHL opportunity (`TFS Listing URL` field)
+4. Every outreach message should link to the TFS listing — this is where buyers view full details, request walkthroughs, and submit offers
+
+### Step 4 — Send Day 0 outreach
 **Top 3 — personal SMS (Brooke or VA, name-checked):**
-Use the "Top 3 — personal touch" template below. Add one sentence of personalization ("I know you bought a 3/2 in Tempe last month, this one's similar but cleaner").
+Use the "Top 3 — personal touch" template below. Add one sentence of personalization ("I know you bought a 3/2 in Tempe last month, this one's similar but cleaner"). Include the TFS listing link.
 
 **The rest — automated blast via GHL workflow:**
 1. Open the workflow **"Deal Blast — Standard"** in GHL.
 2. Enter the smart list as the audience.
 3. Populate merge tags:
-   - Deal sheet link (Drive)
+   - TFS listing link (primary) + Deal sheet link (Drive backup)
    - Asking price
    - City / ST
    - Deal type

@@ -1,21 +1,52 @@
-# DispoBuddy Operations Manual
+# Deal Pros Operations Manual
 
-The canonical set of standard operating procedures (SOPs) for DispoBuddy — a JV disposition partner for real estate wholesalers, bird dogs, and agents, operated as a brand of Deal Pros LLC.
+The canonical set of standard operating procedures (SOPs) for the Deal Pros LLC deal-flow operation, which runs through two brands:
+
+- **Dispo Buddy** (dispobuddy.com) — the **partner/seller-facing** side. JV partners, wholesalers, bird dogs, and agents submit deals here for disposition.
+- **Terms For Sale** (deals.termsforsale.com) — the **buyer-facing** platform. Buyers sign up for our buyers list here, browse active deals, request walkthroughs, and submit offers.
+
+**Same team. Same GHL. Same buyer network. Two front doors to one operation.** A deal enters through Dispo Buddy and gets marketed through Terms For Sale.
 
 **If you are new here, read this file end-to-end before opening any other SOP.** It tells you what the business does, who does what, where to find things, and which SOP to open for any given task.
 
 ---
 
-## What DispoBuddy does
+## How the two brands work together
 
-Partners (wholesalers, bird dogs, agents) send us real estate deals they have under contract. We:
+```
+Partner/Seller submits deal ──→ DISPO BUDDY ──→ Underwrite ──→ JV Agreement
+                                                                    │
+                                                                    ▼
+Buyer signs up / browses ──→ TERMS FOR SALE ←── Package & list deal
+                                    │
+                                    ▼
+                            Inquiries, walkthroughs, offers
+                                    │
+                                    ▼
+                            Negotiate ──→ Title ──→ Close ──→ 50/50 split
+```
 
-1. Underwrite the deal within 24–48 hours.
-2. Sign a simple, non-exclusive JV agreement with the partner.
-3. Package the deal into a professional deal sheet.
-4. Market it to matched buyers in our national buyer network.
-5. Negotiate offers, coordinate title, and close through a title company.
-6. Split the net assignment fee 50/50 with the partner at close.
+**Dispo Buddy is the acquisition engine.** It brings deals into the pipeline.
+**Terms For Sale is the disposition engine.** It puts deals in front of buyers and generates offers.
+
+Every SOP below is labeled with which brand it primarily touches:
+- 🔶 = Dispo Buddy (partner-facing)
+- 🔷 = Terms For Sale (buyer-facing)
+- ⬛ = Both / internal
+
+---
+
+## What the operation does (end to end)
+
+Partners (wholesalers, bird dogs, agents) send us real estate deals they have under contract via **Dispo Buddy**. We:
+
+1. Underwrite the deal within 24–48 hours. *(Dispo Buddy)*
+2. Sign a simple, non-exclusive JV agreement with the partner. *(Dispo Buddy)*
+3. Package the deal into a professional deal sheet. *(Internal)*
+4. List and market it to matched buyers via **Terms For Sale** and direct outreach. *(Terms For Sale)*
+5. Handle buyer inquiries, coordinate walkthroughs, field offers. *(Terms For Sale)*
+6. Negotiate offers, coordinate title, and close through a title company. *(Both)*
+7. Split the net assignment fee 50/50 with the partner at close. *(Internal)*
 
 We promise publicly (and these SOPs exist to make sure we actually deliver on):
 
@@ -31,15 +62,17 @@ We promise publicly (and these SOPs exist to make sure we actually deliver on):
 
 | System | Used for | Access |
 |---|---|---|
-| GoHighLevel (GHL) | CRM — single source of truth for contacts, pipeline, opportunities, SMS + email, workflows | login.leadconnectorhq.com |
-| Pipeline "3. JV Deals" | Every deal opportunity flows through this pipeline | GHL → Opportunities |
+| **dispobuddy.com** (Dispo Buddy) | Partner/seller-facing: deal submissions, JV partner signups, affiliate program | dispobuddy.com / dispobuddy.netlify.app |
+| **deals.termsforsale.com** (Terms For Sale) | Buyer-facing: deal listings, buyer signups, walkthrough requests, offer submissions | deals.termsforsale.com |
+| GoHighLevel (GHL) | CRM — single source of truth for ALL contacts (partners, buyers, affiliates), pipeline, opportunities, SMS + email, workflows. **Shared across both brands.** | login.leadconnectorhq.com |
+| Pipeline "3. JV Deals" | Every deal opportunity flows through this pipeline (from Dispo Buddy intake to Terms For Sale marketing to close) | GHL → Opportunities |
 | Notion | Read-only reporting view of deals (DB id `a3c0a38fd9294d758dedabab2548ff29`) | notion.so |
 | DocuSign | JV agreements and amendments | docusign.com |
 | Google Drive | Deal sheets, photos, contracts, HUDs, executed agreements | drive.google.com |
-| Netlify | Hosts dispobuddy.com and the three form-handling functions | app.netlify.com |
-| GitHub (`brooke-wq/dispobuddy-site`) | Source of truth for site code and these SOPs | github.com |
+| Netlify | Hosts both dispobuddy.com and termsforsale.com sites + serverless functions | app.netlify.com |
+| GitHub (`brooke-wq/dispobuddy-site`) | Source of truth for Dispo Buddy site code and these SOPs | github.com |
 | Title companies | Closings and JV disbursement (see [07-closing-title-coordination.md](./07-closing-title-coordination.md) for the preferred list) | varies by state |
-| QuickBooks | Books and payouts | qbo.intuit.com |
+| QuickBooks | Books and payouts (covers both brands under Deal Pros LLC) | qbo.intuit.com |
 
 **Environment variables** that must be live in Netlify for the forms to work (see [16-website-functions-deploy.md](./16-website-functions-deploy.md)):
 
@@ -60,20 +93,20 @@ We promise publicly (and these SOPs exist to make sure we actually deliver on):
 
 ### A. Deal Flow (the money pipeline)
 
-- [01 — Deal Intake & Triage](./01-deal-intake-triage.md)
-- [02 — Deal Underwriting](./02-deal-underwriting.md)
-- [03 — JV Agreement](./03-jv-agreement.md)
-- [04 — Deal Packaging](./04-deal-packaging.md)
-- [05 — Buyer Matching & Outreach](./05-buyer-matching-outreach.md)
-- [06 — Offer Management & Negotiation](./06-offer-management-negotiation.md)
-- [07 — Closing & Title Coordination](./07-closing-title-coordination.md)
+- [01 — Deal Intake & Triage](./01-deal-intake-triage.md) 🔶 Dispo Buddy
+- [02 — Deal Underwriting](./02-deal-underwriting.md) 🔶 Dispo Buddy
+- [03 — JV Agreement](./03-jv-agreement.md) 🔶 Dispo Buddy
+- [04 — Deal Packaging](./04-deal-packaging.md) ⬛ Both — packaged for Terms For Sale listing
+- [05 — Buyer Matching & Outreach](./05-buyer-matching-outreach.md) 🔷 Terms For Sale + direct
+- [06 — Offer Management & Negotiation](./06-offer-management-negotiation.md) 🔷 Terms For Sale — offers come through TFS
+- [07 — Closing & Title Coordination](./07-closing-title-coordination.md) ⬛ Both
 
 ### B. Partner & Network Management
 
-- [08 — Partner Onboarding](./08-partner-onboarding.md)
-- [09 — Buyer Network Intake](./09-buyer-network-intake.md)
-- [10 — Buyer Network Hygiene](./10-buyer-network-hygiene.md)
-- [11 — Dead Deal / Rejection](./11-dead-deal-rejection.md)
+- [08 — Partner Onboarding](./08-partner-onboarding.md) 🔶 Dispo Buddy
+- [09 — Buyer Network Intake](./09-buyer-network-intake.md) 🔷 Terms For Sale — buyers sign up through TFS
+- [10 — Buyer Network Hygiene](./10-buyer-network-hygiene.md) 🔷 Terms For Sale
+- [11 — Dead Deal / Rejection](./11-dead-deal-rejection.md) 🔶 Dispo Buddy
 
 ### C. Systems & Back-Office
 
@@ -216,8 +249,6 @@ Date — what changed — who changed it.
 | 2026-04-11 | Initial SOP manual created — 19 SOPs + bottleneck analysis + RACI | Claude (on behalf of Brooke) |
 
 ---
-
-<!-- PAGE BREAK -->
 
 # 00 — Bottleneck Analysis
 
@@ -427,8 +458,6 @@ Everything else (B3, B5, B6, B7, B8, B9) layers on top once these three are clos
 
 ---
 
-<!-- PAGE BREAK -->
-
 # 01 — Deal Intake & Triage
 
 ## Purpose
@@ -592,8 +621,6 @@ ESC — dispo-buddy-submit function failed for [partner/property]. Error: [paste
 | 2026-04-11 | Initial version | Claude (on behalf of Brooke) |
 
 ---
-
-<!-- PAGE BREAK -->
 
 # 02 — Deal Underwriting
 
@@ -825,8 +852,6 @@ Hi [partner], I underwrote [address] and we're going to pass. Reason: [one-parag
 
 ---
 
-<!-- PAGE BREAK -->
-
 # 03 — JV Agreement
 
 ## Purpose
@@ -988,8 +1013,6 @@ No problem, [name]. We'll close the file for this one. When you have the next de
 
 ---
 
-<!-- PAGE BREAK -->
-
 # 04 — Deal Packaging
 
 ## Purpose
@@ -1128,7 +1151,12 @@ Write the 2–3 sentence explanation. Use plain English. **Paste from the templa
    ```
    [YYYY-MM-DD HH:MM] [initials] — Deal sheet v1 packaged. PDF in /05 — Deal Sheet/. Ready for SOP 05 — Buyer Matching & Outreach.
    ```
-4. Move opportunity to **Marketing** stage
+4. **List the deal on Terms For Sale** (deals.termsforsale.com):
+   - Create a new listing on the TFS platform with the deal sheet content
+   - Upload photos, numbers, and deal structure
+   - Set the listing status to "Active"
+   - Copy the TFS listing URL to the GHL opportunity (`TFS Listing URL` custom field)
+5. Move opportunity to **Marketing** stage
 
 ## Structure explanation templates (page 5)
 
@@ -1181,12 +1209,10 @@ Not a direct bottleneck, but deal sheet quality is the proof point that justifie
 
 ---
 
-<!-- PAGE BREAK -->
-
 # 05 — Buyer Matching & Outreach
 
 ## Purpose
-This is the highest-leverage step in the business. A great deal with no matched buyers is worth zero. This SOP turns the ad-hoc "who do I know who might want this" habit into a deterministic query + cadenced outreach that a VA can run on autopilot.
+This is the highest-leverage step in the business. A great deal with no matched buyers is worth zero. Deals are marketed through **Terms For Sale** (deals.termsforsale.com) — our buyer-facing platform — plus direct SMS/email outreach to matched buyers in GHL. This SOP turns the ad-hoc "who do I know who might want this" habit into a deterministic query + cadenced outreach that a VA can run on autopilot.
 
 ## Owner / Roles
 - **Accountable:** Brooke
@@ -1242,15 +1268,22 @@ Within the matched list, rank buyers in this order:
 
 The top 3 ranked buyers get a **direct SMS + personal message from Brooke** or a senior VA (not a blast). The rest get the standard outreach sequence.
 
-### Step 3 — Send Day 0 outreach
+### Step 3 — Confirm the deal is live on Terms For Sale
+Before any outreach, verify:
+1. The deal listing is live on **deals.termsforsale.com** (created in [SOP 04](./04-deal-packaging.md))
+2. Photos, numbers, and deal structure are all populated
+3. The listing URL is saved in the GHL opportunity (`TFS Listing URL` field)
+4. Every outreach message should link to the TFS listing — this is where buyers view full details, request walkthroughs, and submit offers
+
+### Step 4 — Send Day 0 outreach
 **Top 3 — personal SMS (Brooke or VA, name-checked):**
-Use the "Top 3 — personal touch" template below. Add one sentence of personalization ("I know you bought a 3/2 in Tempe last month, this one's similar but cleaner").
+Use the "Top 3 — personal touch" template below. Add one sentence of personalization ("I know you bought a 3/2 in Tempe last month, this one's similar but cleaner"). Include the TFS listing link.
 
 **The rest — automated blast via GHL workflow:**
 1. Open the workflow **"Deal Blast — Standard"** in GHL.
 2. Enter the smart list as the audience.
 3. Populate merge tags:
-   - Deal sheet link (Drive)
+   - TFS listing link (primary) + Deal sheet link (Drive backup)
    - Asking price
    - City / ST
    - Deal type
@@ -1384,12 +1417,10 @@ Got it, {{contact.first_name}}. Appreciate the quick reply. I'll keep your buybo
 
 ---
 
-<!-- PAGE BREAK -->
-
 # 06 — Offer Management & Negotiation
 
 ## Purpose
-Offers are the moment of truth. This SOP defines how we log them, present them to the partner, negotiate within authority limits, and pick a winner — without letting a deal stall or a buyer feel ghosted.
+Offers are the moment of truth. Buyers discover deals through **Terms For Sale** (deals.termsforsale.com) and submit inquiries, walkthrough requests, and offers there or via direct reply to our outreach. This SOP defines how we log them, present them to the partner, negotiate within authority limits, and pick a winner — without letting a deal stall or a buyer feel ghosted.
 
 ## Owner / Roles
 - **Accountable:** Brooke
@@ -1397,7 +1428,7 @@ Offers are the moment of truth. This SOP defines how we log them, present them t
 - **Responsible (final acceptance / reject / counter):** Brooke + Partner (joint decision)
 
 ## Trigger
-A buyer replies to outreach with an offer, OR a buyer initiates a conversation about terms.
+A buyer replies to outreach with an offer, OR a buyer submits an inquiry/offer through Terms For Sale, OR a buyer initiates a conversation about terms via SMS/email/phone.
 
 ## Inputs required
 - Deal sheet + deal folder
@@ -1572,8 +1603,6 @@ Supports the [B2](./00-bottlenecks.md#b2--deal--buyer-matching-is-manual-and-mem
 | 2026-04-11 | Initial version | Claude (on behalf of Brooke) |
 
 ---
-
-<!-- PAGE BREAK -->
 
 # 07 — Closing & Title Coordination
 
@@ -1799,8 +1828,6 @@ Hi [closer_name] — can you send the settlement statement as soon as it's ready
 | 2026-04-11 | Initial version | Claude (on behalf of Brooke) |
 
 ---
-
-<!-- PAGE BREAK -->
 
 # 08 — Partner Onboarding
 
@@ -2089,12 +2116,10 @@ Monthly newsletter starts next month if you want market updates.
 
 ---
 
-<!-- PAGE BREAK -->
-
 # 09 — Buyer Network Intake
 
 ## Purpose
-Our matching engine is only as good as the buyer data feeding it. This SOP defines the canonical buybox fields we capture per asset class, the intake script we use on every buyer call, and how the data lands in GHL so [SOP 05](./05-buyer-matching-outreach.md) can actually query it.
+Our matching engine is only as good as the buyer data feeding it. Buyers discover us primarily through **Terms For Sale** (deals.termsforsale.com) — our buyer-facing platform where they sign up for the buyers list, browse active deals, and submit offers. They also come through direct outreach, referrals, and social. This SOP defines the canonical buybox fields we capture per asset class, the intake script we use on every buyer call, and how the data lands in GHL so [SOP 05](./05-buyer-matching-outreach.md) can actually query it.
 
 ## Owner / Roles
 - **Accountable:** Brooke (until a dedicated buyer-network manager is hired)
@@ -2103,6 +2128,8 @@ Our matching engine is only as good as the buyer data feeding it. This SOP defin
 
 ## Trigger
 - A new buyer opts in (website form, referral, Facebook group, conference)
+- A new buyer signs up through **Terms For Sale** (deals.termsforsale.com) — the primary entry point for buyers
+- A new buyer opts in via referral, social, or conference
 - An existing buyer wants to update their buybox
 - A partner who closes deals with us expresses interest in buying too (tag `partner_and_buyer`)
 
@@ -2400,8 +2427,6 @@ Heard. I'll dial it back. I'll only send deals that are a direct hit on your buy
 
 ---
 
-<!-- PAGE BREAK -->
-
 # 10 — Buyer Network Hygiene
 
 ## Purpose
@@ -2576,8 +2601,6 @@ No SMS to the buyer. They just stop receiving blasts. If they ever reach back ou
 | 2026-04-11 | Initial version | Claude (on behalf of Brooke) |
 
 ---
-
-<!-- PAGE BREAK -->
 
 # 11 — Dead Deal / Rejection
 
@@ -2779,8 +2802,6 @@ Supports [B4](./00-bottlenecks.md#b4--partner-onboarding-has-no-education-layer)
 | 2026-04-11 | Initial version | Claude (on behalf of Brooke) |
 
 ---
-
-<!-- PAGE BREAK -->
 
 # 12 — GHL CRM Hygiene
 
@@ -2992,8 +3013,6 @@ ESC — Deal [partner name] [city, state] stuck in [stage] for [X hours]. Reason
 
 ---
 
-<!-- PAGE BREAK -->
-
 # 13 — Notion Deal Tracker
 
 ## Purpose
@@ -3126,8 +3145,6 @@ ORPHAN — Notion row "{{name}}" has no matching GHL opportunity. Submitted {{da
 | 2026-04-11 | Initial version | Claude (on behalf of Brooke) |
 
 ---
-
-<!-- PAGE BREAK -->
 
 # 14 — Partner Communication
 
@@ -3366,8 +3383,6 @@ For every new inbound message the Dispo VA sees:
 
 ---
 
-<!-- PAGE BREAK -->
-
 # 15 — Compliance
 
 ## Purpose
@@ -3590,8 +3605,6 @@ Foundational — compliance isn't on the bottleneck list directly, but a complia
 | 2026-04-11 | Initial version | Claude (on behalf of Brooke) |
 
 ---
-
-<!-- PAGE BREAK -->
 
 # 16 — Website & Functions Deploy
 
@@ -3823,8 +3836,6 @@ git push origin main
 
 ---
 
-<!-- PAGE BREAK -->
-
 # 17 — Marketing & Lead Generation
 
 ## Purpose
@@ -4027,8 +4038,6 @@ Body structure:
 | 2026-04-11 | Initial version | Claude (on behalf of Brooke) |
 
 ---
-
-<!-- PAGE BREAK -->
 
 # 18 — Financial / Payout Reconciliation
 
@@ -4300,8 +4309,6 @@ Not a direct bottleneck, but supports [B8](./00-bottlenecks.md#b8--ghl-and-notio
 | 2026-04-11 | Initial version | Claude (on behalf of Brooke) |
 
 ---
-
-<!-- PAGE BREAK -->
 
 # 19 — Weekly Operations Cadence
 
@@ -4591,8 +4598,6 @@ What I'm watching into Monday:
 | 2026-04-11 | Initial version | Claude (on behalf of Brooke) |
 
 ---
-
-<!-- PAGE BREAK -->
 
 # 20 — Affiliate Program Management
 
