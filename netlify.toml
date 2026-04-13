@@ -99,6 +99,12 @@
   to = "/affiliate-terms.html"
   status = 200
 
+# ── SOP viewer (clean URL) ──
+[[redirects]]
+  from = "/sops"
+  to = "/sops/index.html"
+  status = 200
+
 # ── 404 fallback ──
 [[redirects]]
   from = "/*"
