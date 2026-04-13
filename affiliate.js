@@ -21,7 +21,7 @@
   var STORAGE_KEY = 'dispobuddy_affiliate';
   var COOKIE_NAME = 'dispobuddy_ref';
   var TTL_DAYS    = 90;
-  var TRACK_URL   = '/.netlify/functions/affiliate-track';
+  var TRACK_URL   = '/api/affiliate-track';
 
   // ── cookie helpers ──────────────────────────────────────────
   function setCookie(name, value, days) {
@@ -107,30 +107,37 @@
     saveAttr(attr);
     setCookie(COOKIE_NAME, incomingRef, TTL_DAYS);
 
-    // Fire click beacon (non-blocking, best-effort)
-    try {
-      var payload = JSON.stringify({
-        event: 'click',
-        affiliate_id: incomingRef,
-        landing_page: attr.landing_page,
-        referrer: attr.referrer,
-        utm_source: attr.utm_source,
-        utm_medium: attr.utm_medium,
-        utm_campaign: attr.utm_campaign,
-        user_agent: navigator.userAgent || '',
-      });
-      if (navigator.sendBeacon) {
-        var blob = new Blob([payload], { type: 'application/json' });
-        navigator.sendBeacon(TRACK_URL, blob);
-      } else {
-        fetch(TRACK_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: payload,
-          keepalive: true,
-        }).catch(function () {});
-      }
-    } catch (e) {}
+    // Fire click beacon — debounce: one per session per affiliate ID
+    var beaconKey = 'dispobuddy_beacon_' + incomingRef;
+    var alreadySent = false;
+    try { alreadySent = !!sessionStorage.getItem(beaconKey); } catch (e) {}
+
+    if (!alreadySent) {
+      try {
+        var payload = JSON.stringify({
+          event: 'click',
+          affiliate_id: incomingRef,
+          landing_page: attr.landing_page,
+          referrer: attr.referrer,
+          utm_source: attr.utm_source,
+          utm_medium: attr.utm_medium,
+          utm_campaign: attr.utm_campaign,
+          user_agent: navigator.userAgent || '',
+        });
+        if (navigator.sendBeacon) {
+          var blob = new Blob([payload], { type: 'application/json' });
+          navigator.sendBeacon(TRACK_URL, blob);
+        } else {
+          fetch(TRACK_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: payload,
+            keepalive: true,
+          }).catch(function () {});
+        }
+        try { sessionStorage.setItem(beaconKey, '1'); } catch (e) {}
+      } catch (e) {}
+    }
   } else if (!existing && cookieRef) {
     // Rehydrate from cookie if localStorage was cleared
     saveAttr({

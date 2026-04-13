@@ -27,10 +27,13 @@
 const GHL_BASE = 'https://services.leadconnectorhq.com';
 
 // Commission structure constants (tweak here to change program economics)
+// Source of truth: affiliate-terms.html + SOP 20
 const COMMISSION = {
-  SIGNUP_FLAT:        0,     // nothing on raw signup — only on qualified first deal
-  FIRST_DEAL_FLAT:    250,   // $250 when referred partner submits first deal
-  CLOSED_DEAL_RATE:   0.10,  // 10% of assignment fee
+  SIGNUP_FLAT:        0,     // nothing on raw signup
+  FIRST_CLOSE_FLAT:   200,   // $200 when referred partner closes their first deal (within 6 months)
+  CLOSED_DEAL_RATE:   0.05,  // 5% of Dispo Buddy's net dispo fee per close
+  TRAILING_MONTHS:    12,    // commission window from affiliate signup date
+  FIRST_CLOSE_WINDOW_MONTHS: 6, // first-close bonus must happen within 6 months of partner signup
 };
 
 exports.handler = async (event) => {
@@ -81,20 +84,39 @@ exports.handler = async (event) => {
     const nextFields = { ...currentFields };
     let commissionDelta = 0;
 
+    // Check if the affiliate is still within their trailing commission window
+    const joinedAt = currentFields.affiliate_joined_at
+      ? new Date(currentFields.affiliate_joined_at).getTime()
+      : 0;
+    const trailingExpiry = joinedAt
+      ? joinedAt + COMMISSION.TRAILING_MONTHS * 30 * 24 * 60 * 60 * 1000
+      : 0;
+    const withinTrailingWindow = !joinedAt || Date.now() < trailingExpiry;
+
     if (eventType === 'click') {
       nextFields.affiliate_clicks = String((parseInt(currentFields.affiliate_clicks, 10) || 0) + 1);
     } else if (eventType === 'signup') {
       nextFields.affiliate_signups = String((parseInt(currentFields.affiliate_signups, 10) || 0) + 1);
     } else if (eventType === 'deal_submitted') {
       nextFields.affiliate_deals_submitted = String((parseInt(currentFields.affiliate_deals_submitted, 10) || 0) + 1);
-      // First-deal bonus: only pay once per referred lead
-      if (body.first_deal === true || body.first_deal === 'Yes') {
-        commissionDelta += COMMISSION.FIRST_DEAL_FLAT;
-      }
     } else if (eventType === 'deal_closed') {
       nextFields.affiliate_deals_closed = String((parseInt(currentFields.affiliate_deals_closed, 10) || 0) + 1);
-      const dealValue = parseFloat(body.deal_value || 0) || 0;
-      commissionDelta += dealValue * COMMISSION.CLOSED_DEAL_RATE;
+
+      // First-close flat bonus ($200): partner's first closed deal within 6 months of signup
+      if (body.first_close === true || body.first_close === 'Yes') {
+        const firstCloseExpiry = joinedAt
+          ? joinedAt + COMMISSION.FIRST_CLOSE_WINDOW_MONTHS * 30 * 24 * 60 * 60 * 1000
+          : 0;
+        if (!joinedAt || Date.now() < firstCloseExpiry) {
+          commissionDelta += COMMISSION.FIRST_CLOSE_FLAT;
+        }
+      }
+
+      // Ongoing 5% of net dispo fee — only if within the 12-month trailing window
+      if (withinTrailingWindow) {
+        const dealValue = parseFloat(body.deal_value || 0) || 0;
+        commissionDelta += dealValue * COMMISSION.CLOSED_DEAL_RATE;
+      }
     }
 
     if (commissionDelta > 0) {

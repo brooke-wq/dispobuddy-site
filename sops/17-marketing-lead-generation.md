@@ -39,6 +39,13 @@ Every partner and every buyer comes from somewhere — and today we don't know w
 | Paid Google (optional) | "real estate wholesaler dispo partner" intent searches | paused until B9 lands | Wholesalers in buying mode |
 | Podcast guest appearances | Guest on investor / wholesaler shows | ad-hoc | Broad |
 | Email newsletter | Monthly market update + featured deals | monthly | Warm partners + buyers |
+| **Affiliate program** | Affiliates share referral links (`?ref=`) to their audiences | always-on | Wholesalers, agents, investors (through affiliates' networks) |
+
+The affiliate program is a distinct growth channel. Affiliates sign up at `/affiliates`, get a unique `?ref=` link, and earn $200 on first closed deal + 5% trailing for 12 months. Tracking is handled by `affiliate.js` (client-side) and `affiliate-track.js` (server-side). See [SOP 20](./20-affiliate-program.md) for full management details.
+
+**Affiliate-sourced leads show up in the source report as:**
+- `utm_source=affiliate_[affiliate_id]` (if the affiliate used our UTM-tagged link)
+- OR `referred_by_affiliate` custom field on the contact (always set when `?ref=` is present)
 
 ## UTM taxonomy
 

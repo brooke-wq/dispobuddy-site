@@ -17,7 +17,7 @@
  */
 
 const GHL_BASE       = 'https://services.leadconnectorhq.com';
-const SITE_URL       = process.env.SITE_URL || 'https://dispobuddy.netlify.app';
+const SITE_URL       = process.env.SITE_URL || 'https://dispobuddy.com';
 
 // ─────────────────────────────────────────────────────────────
 // MAIN HANDLER
@@ -48,8 +48,8 @@ exports.handler = async (event) => {
   const notes     = (body.notes     || '').trim();
   const consent   = !!body.consent;
 
-  if (!full_name || !email || !phone || !payout_method) {
-    return respond(400, { error: 'Missing required fields: full_name, email, phone, payout_method' });
+  if (!full_name || !email || !phone) {
+    return respond(400, { error: 'Missing required fields: full_name, email, phone' });
   }
   if (!consent) {
     return respond(400, { error: 'You must accept the affiliate program terms to sign up.' });
@@ -62,7 +62,7 @@ exports.handler = async (event) => {
   };
 
   try {
-    const affiliate_id = generateAffiliateId(full_name);
+    const affiliate_id = await generateUniqueAffiliateId(full_name, headers, locationId);
     const referral_link = `${SITE_URL}/?ref=${affiliate_id}`;
 
     // ── 1. Upsert Contact with affiliate custom fields ─────────
@@ -177,17 +177,38 @@ exports.handler = async (event) => {
 };
 
 // ─────────────────────────────────────────────────────────────
-// UNIQUE AFFILIATE ID
+// UNIQUE AFFILIATE ID (with collision check against GHL)
 // ─────────────────────────────────────────────────────────────
-function generateAffiliateId(fullName) {
+async function generateUniqueAffiliateId(fullName, headers, locationId) {
   const slug = (fullName || 'partner')
     .toLowerCase()
     .replace(/[^a-z0-9\s]/g, '')
     .trim()
     .replace(/\s+/g, '-')
     .slice(0, 24) || 'partner';
-  const rand = Math.random().toString(36).slice(2, 6);
-  return `${slug}-${rand}`;
+
+  for (let attempt = 0; attempt < 5; attempt++) {
+    const rand = Math.random().toString(36).slice(2, 6);
+    const candidate = `${slug}-${rand}`;
+    // Check if this ID already exists in GHL
+    const searchRes = await ghlFetch(
+      `${GHL_BASE}/contacts/?locationId=${locationId}&query=${encodeURIComponent(candidate)}&limit=5`,
+      'GET', null, headers
+    );
+    const searchData = await searchRes.json();
+    const contacts = searchData.contacts || [];
+    const collision = contacts.some(c => {
+      const fields = c.customFields || c.customField || [];
+      return fields.some(f =>
+        (f.key || f.name || '') === 'affiliate_id' &&
+        String(f.field_value || f.value || '').trim().toLowerCase() === candidate
+      );
+    });
+    if (!collision) return candidate;
+  }
+  // Fallback after 5 attempts: add timestamp to guarantee uniqueness
+  const ts = Date.now().toString(36).slice(-4);
+  return `${slug}-${ts}`;
 }
 
 // ─────────────────────────────────────────────────────────────
@@ -274,9 +295,8 @@ function buildAffiliateWelcomeEmail({ first, full_name, affiliate_id, referral_l
 
         <h2 style="font-size:16px;font-weight:700;margin-bottom:10px">Commission Structure</h2>
         <div style="background:#F4F6F9;border-radius:12px;padding:20px 24px;margin-bottom:24px">
-          <p style="margin-bottom:10px"><strong style="color:#F7941D">$250</strong> — per qualified partner you refer who submits their first deal</p>
-          <p style="margin-bottom:10px"><strong style="color:#F7941D">10%</strong> — of Dispo Buddy's net assignment fee on every deal your referrals close</p>
-          <p><strong style="color:#F7941D">$100 bonus</strong> — for every 5 closed referrals in a rolling 90-day window</p>
+          <p style="margin-bottom:10px"><strong style="color:#F7941D">$200</strong> — flat bonus when a referred JV partner closes their first deal (within 6 months of signup)</p>
+          <p><strong style="color:#F7941D">5%</strong> — of Dispo Buddy's net dispo fee on every deal that partner closes for 12 months</p>
         </div>
 
         <h2 style="font-size:16px;font-weight:700;margin-bottom:10px">How It Works</h2>

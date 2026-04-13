@@ -97,6 +97,29 @@ If the partner was referred per [SOP 17](./17-marketing-lead-generation.md) AND 
 5. Send the referrer the thank-you SMS from [SOP 17](./17-marketing-lead-generation.md)
 6. File confirmation
 
+### Step 4b — Affiliate commission (if applicable)
+If the closed deal's partner has a `referred_by_affiliate` custom field on their GHL contact:
+
+1. Look up the affiliate by the `referred_by_affiliate` value (this is the affiliate's `affiliate_id`)
+2. The `affiliate-track.js` function should have already incremented `affiliate_commission_earned` when the `deal_closed` event was fired. **Verify** the amount is correct:
+   - **First close for this partner + within 6 months of partner signup?** → $200 flat bonus should be credited
+   - **Within the affiliate's 12-month trailing window?** → 5% of our net dispo fee should be credited
+   - **Outside the 12-month window?** → no ongoing commission; only verify the $200 first-close bonus if applicable
+3. If the automated counter is wrong, manually update `affiliate_commission_earned` in GHL
+4. The actual ACH payout happens monthly on the 15th — see "Monthly affiliate payout" below
+
+**Monthly affiliate payout (on or around the 15th):**
+1. Pull all affiliates with `affiliate_commission_earned` > `affiliate_commission_paid`
+2. Calculate pending: `earned - paid`
+3. If pending ≥ $100 (minimum payout threshold): issue ACH
+4. Update `affiliate_commission_paid` in GHL after the ACH is confirmed
+5. Add a note on the affiliate's GHL contact: `[YYYY-MM-DD] Affiliate payout: $[amount] via ACH for [month]`
+6. Categorize in QB as account 5010 — Referral Bonuses
+7. File ACH confirmation in `/Drive/DispoBuddy/Finance/YYYY/Affiliate Payouts/`
+8. If pending < $100: rolls over to next month. No action.
+
+See [SOP 20](./20-affiliate-program.md) for the full affiliate program management workflow.
+
 ### Step 5 — Update records
 1. GHL opportunity → confirm **Closed Won** stage, `Final Assignment Fee` custom field populated
 2. Notion row → Status = Closed Won, Closed At = today, Assignment Fee = the exact amount
