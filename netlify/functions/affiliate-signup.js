@@ -17,7 +17,7 @@
  */
 
 const GHL_BASE       = 'https://services.leadconnectorhq.com';
-const SITE_URL       = process.env.SITE_URL || 'https://dispobuddy.com';
+const SITE_URL       = process.env.SITE_URL || 'https://dispobuddy.netlify.app';
 
 // ─────────────────────────────────────────────────────────────
 // MAIN HANDLER
