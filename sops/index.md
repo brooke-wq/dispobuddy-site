@@ -1,21 +1,52 @@
-# DispoBuddy Operations Manual
+# Deal Pros Operations Manual
 
-The canonical set of standard operating procedures (SOPs) for DispoBuddy — a JV disposition partner for real estate wholesalers, bird dogs, and agents, operated as a brand of Deal Pros LLC.
+The canonical set of standard operating procedures (SOPs) for the Deal Pros LLC deal-flow operation, which runs through two brands:
+
+- **Dispo Buddy** (dispobuddy.com) — the **partner/seller-facing** side. JV partners, wholesalers, bird dogs, and agents submit deals here for disposition.
+- **Terms For Sale** (deals.termsforsale.com) — the **buyer-facing** platform. Buyers sign up for our buyers list here, browse active deals, request walkthroughs, and submit offers.
+
+**Same team. Same GHL. Same buyer network. Two front doors to one operation.** A deal enters through Dispo Buddy and gets marketed through Terms For Sale.
 
 **If you are new here, read this file end-to-end before opening any other SOP.** It tells you what the business does, who does what, where to find things, and which SOP to open for any given task.
 
 ---
 
-## What DispoBuddy does
+## How the two brands work together
 
-Partners (wholesalers, bird dogs, agents) send us real estate deals they have under contract. We:
+```
+Partner/Seller submits deal ──→ DISPO BUDDY ──→ Underwrite ──→ JV Agreement
+                                                                    │
+                                                                    ▼
+Buyer signs up / browses ──→ TERMS FOR SALE ←── Package & list deal
+                                    │
+                                    ▼
+                            Inquiries, walkthroughs, offers
+                                    │
+                                    ▼
+                            Negotiate ──→ Title ──→ Close ──→ 50/50 split
+```
 
-1. Underwrite the deal within 24–48 hours.
-2. Sign a simple, non-exclusive JV agreement with the partner.
-3. Package the deal into a professional deal sheet.
-4. Market it to matched buyers in our national buyer network.
-5. Negotiate offers, coordinate title, and close through a title company.
-6. Split the net assignment fee 50/50 with the partner at close.
+**Dispo Buddy is the acquisition engine.** It brings deals into the pipeline.
+**Terms For Sale is the disposition engine.** It puts deals in front of buyers and generates offers.
+
+Every SOP below is labeled with which brand it primarily touches:
+- 🔶 = Dispo Buddy (partner-facing)
+- 🔷 = Terms For Sale (buyer-facing)
+- ⬛ = Both / internal
+
+---
+
+## What the operation does (end to end)
+
+Partners (wholesalers, bird dogs, agents) send us real estate deals they have under contract via **Dispo Buddy**. We:
+
+1. Underwrite the deal within 24–48 hours. *(Dispo Buddy)*
+2. Sign a simple, non-exclusive JV agreement with the partner. *(Dispo Buddy)*
+3. Package the deal into a professional deal sheet. *(Internal)*
+4. List and market it to matched buyers via **Terms For Sale** and direct outreach. *(Terms For Sale)*
+5. Handle buyer inquiries, coordinate walkthroughs, field offers. *(Terms For Sale)*
+6. Negotiate offers, coordinate title, and close through a title company. *(Both)*
+7. Split the net assignment fee 50/50 with the partner at close. *(Internal)*
 
 We promise publicly (and these SOPs exist to make sure we actually deliver on):
 
@@ -31,15 +62,17 @@ We promise publicly (and these SOPs exist to make sure we actually deliver on):
 
 | System | Used for | Access |
 |---|---|---|
-| GoHighLevel (GHL) | CRM — single source of truth for contacts, pipeline, opportunities, SMS + email, workflows | login.leadconnectorhq.com |
-| Pipeline "3. JV Deals" | Every deal opportunity flows through this pipeline | GHL → Opportunities |
+| **dispobuddy.com** (Dispo Buddy) | Partner/seller-facing: deal submissions, JV partner signups, affiliate program | dispobuddy.com / dispobuddy.netlify.app |
+| **deals.termsforsale.com** (Terms For Sale) | Buyer-facing: deal listings, buyer signups, walkthrough requests, offer submissions | deals.termsforsale.com |
+| GoHighLevel (GHL) | CRM — single source of truth for ALL contacts (partners, buyers, affiliates), pipeline, opportunities, SMS + email, workflows. **Shared across both brands.** | login.leadconnectorhq.com |
+| Pipeline "3. JV Deals" | Every deal opportunity flows through this pipeline (from Dispo Buddy intake to Terms For Sale marketing to close) | GHL → Opportunities |
 | Notion | Read-only reporting view of deals (DB id `a3c0a38fd9294d758dedabab2548ff29`) | notion.so |
 | DocuSign | JV agreements and amendments | docusign.com |
 | Google Drive | Deal sheets, photos, contracts, HUDs, executed agreements | drive.google.com |
-| Netlify | Hosts dispobuddy.com and the three form-handling functions | app.netlify.com |
-| GitHub (`brooke-wq/dispobuddy-site`) | Source of truth for site code and these SOPs | github.com |
+| Netlify | Hosts both dispobuddy.com and termsforsale.com sites + serverless functions | app.netlify.com |
+| GitHub (`brooke-wq/dispobuddy-site`) | Source of truth for Dispo Buddy site code and these SOPs | github.com |
 | Title companies | Closings and JV disbursement (see [07-closing-title-coordination.md](./07-closing-title-coordination.md) for the preferred list) | varies by state |
-| QuickBooks | Books and payouts | qbo.intuit.com |
+| QuickBooks | Books and payouts (covers both brands under Deal Pros LLC) | qbo.intuit.com |
 
 **Environment variables** that must be live in Netlify for the forms to work (see [16-website-functions-deploy.md](./16-website-functions-deploy.md)):
 
@@ -60,20 +93,20 @@ We promise publicly (and these SOPs exist to make sure we actually deliver on):
 
 ### A. Deal Flow (the money pipeline)
 
-- [01 — Deal Intake & Triage](./01-deal-intake-triage.md)
-- [02 — Deal Underwriting](./02-deal-underwriting.md)
-- [03 — JV Agreement](./03-jv-agreement.md)
-- [04 — Deal Packaging](./04-deal-packaging.md)
-- [05 — Buyer Matching & Outreach](./05-buyer-matching-outreach.md)
-- [06 — Offer Management & Negotiation](./06-offer-management-negotiation.md)
-- [07 — Closing & Title Coordination](./07-closing-title-coordination.md)
+- [01 — Deal Intake & Triage](./01-deal-intake-triage.md) 🔶 Dispo Buddy
+- [02 — Deal Underwriting](./02-deal-underwriting.md) 🔶 Dispo Buddy
+- [03 — JV Agreement](./03-jv-agreement.md) 🔶 Dispo Buddy
+- [04 — Deal Packaging](./04-deal-packaging.md) ⬛ Both — packaged for Terms For Sale listing
+- [05 — Buyer Matching & Outreach](./05-buyer-matching-outreach.md) 🔷 Terms For Sale + direct
+- [06 — Offer Management & Negotiation](./06-offer-management-negotiation.md) 🔷 Terms For Sale — offers come through TFS
+- [07 — Closing & Title Coordination](./07-closing-title-coordination.md) ⬛ Both
 
 ### B. Partner & Network Management
 
-- [08 — Partner Onboarding](./08-partner-onboarding.md)
-- [09 — Buyer Network Intake](./09-buyer-network-intake.md)
-- [10 — Buyer Network Hygiene](./10-buyer-network-hygiene.md)
-- [11 — Dead Deal / Rejection](./11-dead-deal-rejection.md)
+- [08 — Partner Onboarding](./08-partner-onboarding.md) 🔶 Dispo Buddy
+- [09 — Buyer Network Intake](./09-buyer-network-intake.md) 🔷 Terms For Sale — buyers sign up through TFS
+- [10 — Buyer Network Hygiene](./10-buyer-network-hygiene.md) 🔷 Terms For Sale
+- [11 — Dead Deal / Rejection](./11-dead-deal-rejection.md) 🔶 Dispo Buddy
 
 ### C. Systems & Back-Office
 

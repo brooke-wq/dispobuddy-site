@@ -136,7 +136,12 @@ Write the 2–3 sentence explanation. Use plain English. **Paste from the templa
    ```
    [YYYY-MM-DD HH:MM] [initials] — Deal sheet v1 packaged. PDF in /05 — Deal Sheet/. Ready for SOP 05 — Buyer Matching & Outreach.
    ```
-4. Move opportunity to **Marketing** stage
+4. **List the deal on Terms For Sale** (deals.termsforsale.com):
+   - Create a new listing on the TFS platform with the deal sheet content
+   - Upload photos, numbers, and deal structure
+   - Set the listing status to "Active"
+   - Copy the TFS listing URL to the GHL opportunity (`TFS Listing URL` custom field)
+5. Move opportunity to **Marketing** stage
 
 ## Structure explanation templates (page 5)
 

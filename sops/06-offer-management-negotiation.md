@@ -1,7 +1,7 @@
 # 06 — Offer Management & Negotiation
 
 ## Purpose
-Offers are the moment of truth. This SOP defines how we log them, present them to the partner, negotiate within authority limits, and pick a winner — without letting a deal stall or a buyer feel ghosted.
+Offers are the moment of truth. Buyers discover deals through **Terms For Sale** (deals.termsforsale.com) and submit inquiries, walkthrough requests, and offers there or via direct reply to our outreach. This SOP defines how we log them, present them to the partner, negotiate within authority limits, and pick a winner — without letting a deal stall or a buyer feel ghosted.
 
 ## Owner / Roles
 - **Accountable:** Brooke
@@ -9,7 +9,7 @@ Offers are the moment of truth. This SOP defines how we log them, present them t
 - **Responsible (final acceptance / reject / counter):** Brooke + Partner (joint decision)
 
 ## Trigger
-A buyer replies to outreach with an offer, OR a buyer initiates a conversation about terms.
+A buyer replies to outreach with an offer, OR a buyer submits an inquiry/offer through Terms For Sale, OR a buyer initiates a conversation about terms via SMS/email/phone.
 
 ## Inputs required
 - Deal sheet + deal folder
