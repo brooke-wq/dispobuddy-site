@@ -975,8 +975,9 @@ img{max-width:100%;display:block}
         <!-- IMPORTANT DETAILS -->
         <div style="margin-top:16px">
           <div class="field-group">
-            <label class="field-label">Important Details / Notes</label>
-            <textarea class="fi fi-textarea" id="importantDetails" placeholder="Seller motivation, known repairs, why this deal works..."></textarea>
+            <label class="field-label">Property condition / important details <span class="req">*</span></label>
+            <textarea class="fi fi-textarea" id="importantDetails" placeholder="Condition (e.g. needs full rehab / cosmetic only / turnkey), seller motivation, known repairs, why this deal works..."></textarea>
+            <div class="field-err" id="impdet-err">Tell us the condition and any important details so we don't have to chase you for it</div>
           </div>
         </div>
       </div>
@@ -1245,6 +1246,7 @@ img{max-width:100%;display:block}
       check('desiredAskingPrice', 'daprice-err');
       check('arvEstimate', 'arv-err');
       check('buyerEntryFee', 'entry-err');
+      check('importantDetails', 'impdet-err');
     }
     var errBanner = document.getElementById('err' + n);
     if (errBanner) errBanner.classList.toggle('show', !valid);
@@ -1403,6 +1405,17 @@ img{max-width:100%;display:block}
 
   /* -- SUBMIT ------------------------------------------------- */
   window.submitForm = async function() {
+    // Re-run every step's validator so partial deals can't slip through
+    // by navigating back and clearing fields. Jump to the first failing step.
+    for (var s = 1; s <= 3; s++) {
+      if (!validateStep(s)) {
+        currentStep = s;
+        showStep(s);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        return;
+      }
+    }
+
     var consent = document.getElementById('consentCheck');
     var consentErr = document.getElementById('consent-err');
     if (!consent.checked) {
